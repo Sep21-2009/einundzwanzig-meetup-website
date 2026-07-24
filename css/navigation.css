@@ -137,3 +137,67 @@
 }
 
 .menu-toggle { display: none; }
+
+/* ============================================================
+   STICKY-NAVIGATION BEIM SCROLLEN
+   Der Komponenten-Platzhalter ist das eigentliche Sticky-Element.
+   Dadurch bleibt die Navigation auch dann sichtbar, wenn sie per
+   JavaScript aus components/nav.html geladen wurde.
+   ============================================================ */
+[data-include="components/nav.html"] {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Der Header liegt innerhalb des Sticky-Platzhalters und muss daher
+   nicht selbst erneut sticky positioniert werden. */
+[data-include="components/nav.html"] .site-header {
+  position: relative;
+  z-index: 1;
+  transition:
+    padding 0.24s ease,
+    background-color 0.24s ease,
+    border-color 0.24s ease,
+    box-shadow 0.24s ease;
+}
+
+/* Sichtbare Abgrenzung, sobald der Besucher nach unten gescrollt hat. */
+[data-include="components/nav.html"] .site-header.scrolled {
+  padding-top: 9px;
+  padding-bottom: 9px;
+  background: rgba(7, 7, 7, 0.96);
+  border-bottom-color: rgba(247, 147, 26, 0.24);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
+}
+
+:root[data-theme="light"]
+  [data-include="components/nav.html"] .site-header.scrolled {
+  background: rgba(245, 242, 237, 0.97);
+  box-shadow: 0 12px 30px rgba(40, 32, 24, 0.14);
+}
+
+/* Die aktive Hauptseite bleibt auch ohne Hover eindeutig erkennbar. */
+.page-link {
+  position: relative;
+  padding: 10px 0;
+}
+
+.page-link::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 3px;
+  left: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.page-link:hover::after,
+.page-link.active::after {
+  transform: scaleX(1);
+}

@@ -93,3 +93,54 @@ function initialiseDropdowns() {
     document.querySelector(".menu-toggle")?.focus();
   });
 }
+
+/**
+ * Hält die Navigation beim Scrollen kompakt und gut erkennbar.
+ * Gleichzeitig werden offene Dropdowns und das mobile Menü geschlossen,
+ * damit sie den Seiteninhalt beim Scrollen nicht verdecken.
+ */
+document.addEventListener("includes:loaded", () => {
+  initialiseStickyHeader();
+});
+
+function initialiseStickyHeader() {
+  const header = document.querySelector(".site-header");
+  const navigation = document.querySelector(".main-nav");
+  const menuButton = document.querySelector(".menu-toggle");
+  const groups = Array.from(document.querySelectorAll(".nav-group"));
+
+  if (!header) return;
+
+  let previousScrollY = window.scrollY;
+  let framePending = false;
+
+  function updateHeader() {
+    const currentScrollY = window.scrollY;
+    header.classList.toggle("scrolled", currentScrollY > 18);
+
+    /* Menüs erst schließen, wenn tatsächlich gescrollt wurde. */
+    if (Math.abs(currentScrollY - previousScrollY) > 2) {
+      groups.forEach((group) => group.removeAttribute("open"));
+
+      if (navigation?.classList.contains("open")) {
+        navigation.classList.remove("open");
+        menuButton?.setAttribute("aria-expanded", "false");
+      }
+    }
+
+    previousScrollY = currentScrollY;
+    framePending = false;
+  }
+
+  updateHeader();
+
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (framePending) return;
+      framePending = true;
+      window.requestAnimationFrame(updateHeader);
+    },
+    { passive: true }
+  );
+}

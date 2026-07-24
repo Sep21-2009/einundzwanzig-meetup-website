@@ -310,3 +310,28 @@
     right: 18px;
   }
 }
+
+/* ============================================================
+   STICKY-NAVIGATION AUF TABLETS UND SMARTPHONES
+   ============================================================ */
+@media (max-width: 900px) {
+  .nav-primary .page-link {
+    padding: 11px 14px;
+    border-radius: 10px;
+  }
+
+  .nav-primary .page-link::after {
+    right: 28%;
+    bottom: 5px;
+    left: 28%;
+  }
+
+  .nav-primary .page-link.active {
+    background: rgba(247, 147, 26, 0.08);
+  }
+
+  [data-include="components/nav.html"] .site-header.scrolled {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+}
