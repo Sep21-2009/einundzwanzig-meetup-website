@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bitcoin-Rentensimulation mit historisch abgeleiteter Rendite-Abschwächung, Power Law, monatlicher Entnahme und Jahresübersicht.">
+  <meta name="theme-color" content="#0b0d12">
+  <title>Bitcoin-Rentenrechner · Einundzwanzig Koblenz</title>
+  <link rel="canonical" href="https://21koblenz.github.io/einundzwanzig-meetup-website/rechner.html">
+  <link href="css/style.css" rel="stylesheet">
+  <link href="css/rechner.css" rel="stylesheet">
+</head>
+<body class="calculator-page">
+  <div data-include="components/nav.html"></div>
+  <main class="page-shell calculator-shell">
+    <header class="topbar calculator-contextbar">
+      <a class="calculator-brand" href="index.html" aria-label="Zurück zur Startseite">
+        <div class="brand-mark" aria-hidden="true">21</div>
+        <span><small>Einundzwanzig Koblenz · Werkzeug</small>Bitcoin-Rentenrechner</span>
+      </a>
+      <div class="top-note">Lokal im Browser · keine Datenübertragung</div>
+    </header>
+
+    <section class="hero calculator-hero">
+      <div>
+        <div class="eyebrow">Bitcoin Langzeitsimulation</div>
+        <h1><span>Bitcoin</span><br>Rentenrechner</h1>
+        <p class="hero-copy">
+          Simuliere feste Entnahmen oder berechne den maximalen Monatsbetrag bei nominalem Kapitalerhalt. Alle drei Kursmodelle lassen sich direkt vergleichen.
+        </p>
+      </div>
+
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-emblem">
+          <span class="hero-emblem-number">21</span>
+          <span class="hero-emblem-label">Bitcoin<br>Langzeitmodell</span>
+        </div>
+        <div class="floating-card one">Letzter Boden-CAGR<strong id="heroLatestCagr">50,2 % p. a.</strong></div>
+        <div class="floating-card two">Modellrate 1. Jahr<strong id="heroDecayRate">35,0 % p. a.</strong></div>
+      </div>
+    </section>
+
+    <aside class="legal-callout" aria-label="Hinweis zur Nutzung">
+      <div class="legal-callout-icon" aria-hidden="true">!</div>
+      <div>
+        <strong>Keine Finanzberatung und keine Kursprognose</strong>
+        <p>Der Rechner zeigt ausschließlich mathematische Szenarien auf Basis frei wählbarer Annahmen. Historische Renditen, Power-Law-Modelle und Trendlinien garantieren keine zukünftige Entwicklung. Steuern, Inflation, Gebühren, Volatilität und persönliche Risiken müssen separat berücksichtigt werden.</p>
+      </div>
+    </aside>
+
+    <section class="app-grid">
+      <form class="panel settings-panel" id="simulationForm" novalidate>
+        <div class="panel-heading">
+          <div>
+            <h2>Deine Annahmen</h2>
+            <p>Alle Werte können frei angepasst werden.</p>
+          </div>
+        </div>
+
+        <div class="input-grid">
+          <div class="field">
+            <label for="bitcoinPrice">Bitcoin-Preis heute <span>Ausgangspunkt der Rechnung</span></label>
+            <div class="input-wrap">
+              <input type="number" id="bitcoinPrice" placeholder="210000" aria-describedby="bitcoinPriceExample" min="0.01" step="100" inputmode="decimal" required> 
+              <span class="unit">EUR</span>
+            </div>
+            <small class="input-example" id="bitcoinPriceExample">Graue Zahl = Beispielwert. Bitte eigenen Wert eintragen.</small>
+          </div>
+
+          <div class="field">
+            <label for="bitcoinAmount">Bitcoin-Bestand <span>Startmenge</span></label>
+            <div class="input-wrap">
+              <input type="number" id="bitcoinAmount" placeholder="21000000" aria-describedby="bitcoinAmountExample" min="0.00000001" step="0.0001" inputmode="decimal" required>
+              <span class="unit">BTC</span>
+            </div>
+            <small class="input-example" id="bitcoinAmountExample">Beispielwert: 21000000 BTC.</small>
+          </div>
+
+          <div class="field">
+            <label>Rechenziel <span>Entnahme vorgeben oder berechnen</span></label>
+            <div class="goal-selector" role="radiogroup" aria-label="Rechenziel auswählen">
+              <div class="goal-option">
+                <input type="radio" name="calculationMode" id="modeFixed" value="fixed" checked>
+                <label for="modeFixed">
+                  <strong>Feste Entnahme</strong>
+                  <small>Monatsbetrag vorgeben und Bestand simulieren</small>
+                </label>
+              </div>
+              <div class="goal-option">
+                <input type="radio" name="calculationMode" id="modePreserve" value="preserve">
+                <label for="modePreserve">
+                  <strong>Entnahme berechnen</strong>
+                  <small>Maximaler Festbetrag bei Kapitalerhalt ab heute</small>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Berechnungsmodell <span>Kursentwicklung</span></label>
+            <div class="model-selector" role="radiogroup" aria-label="Berechnungsmodell auswählen">
+              <div class="model-option">
+                <input type="radio" name="growthModel" id="modelConstant" value="constant">
+                <label for="modelConstant">
+                  <strong>Konstant</strong>
+                  <small>Feste Rendite jedes Jahr</small>
+                </label>
+              </div>
+              <div class="model-option">
+                <input type="radio" name="growthModel" id="modelDecay" value="decay" checked>
+                <label for="modelDecay">
+                  <strong>Abschwächung</strong>
+                  <small>Sinkt jährlich bis zum Zielwert</small>
+                </label>
+              </div>
+              <div class="model-option">
+                <input type="radio" name="growthModel" id="modelPowerLaw" value="powerLaw">
+                <label for="modelPowerLaw">
+                  <strong>Power Law</strong>
+                  <small>Wachstum nach Bitcoin-Alter</small>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="model-fields" data-model-fields="constant">
+            <div class="field">
+              <label for="annualRate">Jährliches Kurswachstum <span>konstant</span></label>
+              <div class="input-wrap">
+                <input type="number" id="annualRate" value="21" min="-99.99" max="1000" step="0.1" inputmode="decimal">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <p class="model-explanation">Der BTC-Preis wächst jeden Monat mit der auf einen Monat umgerechneten festen Jahresrendite.</p>
+          </div>
+
+          <div class="model-fields" data-model-fields="decay" hidden>
+            <div class="field">
+              <label for="decayStartRate">Modellierte Rendite im 1. Jahr <span>ab heute</span></label>
+              <div class="input-wrap">
+                <input type="number" id="decayStartRate" value="35.0" min="0" max="1000" step="0.1" inputmode="decimal">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="decayReduction">Relative Abschwächung im 1. Jahr <span>nur auf den Überschuss über 8 %</span></label>
+              <div class="input-wrap">
+                <input type="number" id="decayReduction" value="8.8" min="0.1" max="99" step="0.1" inputmode="decimal">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="decayFloor">Ziel-/Mindest-Rendite <span>wird nicht unterschritten</span></label>
+              <div class="input-wrap">
+                <input type="number" id="decayFloor" value="8" min="0" max="1000" step="0.1" inputmode="decimal">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <p class="model-explanation">Hyperbolisches Modell: Im ersten Jahr sinkt nur der Renditeabstand zur Untergrenze um den eingestellten Wert. Danach wird die prozentuale Abschwächung jedes Jahr automatisch kleiner – statt dauerhaft mit demselben Prozentsatz weiterzufallen.</p>
+            <div class="historical-defaults">
+              <div class="historical-defaults-head">
+                <strong>Bärenmarkt-Modell selbst kalibrieren</strong>
+                <span id="bottomCountLabel">3 Böden</span>
+              </div>
+              <div class="historical-values">
+                <div class="historical-value"><strong id="historicalStartRate">–</strong><small>modellierte Rendite im 1. Jahr</small></div>
+                <div class="historical-value"><strong id="historicalInitialReduction">–</strong><small>Abschwächung im nächsten Jahr</small></div>
+                <div class="historical-value"><strong id="historicalLatestCagr">–</strong><small>neuester Boden-CAGR</small></div>
+              </div>
+
+              <div class="bear-editor">
+                <div class="bear-editor-head">
+                  <div>
+                    <strong>Bärenmarkt-Böden</strong>
+                    <small>Datum und Schlusskurs in USD. Mindestens drei Böden sind nötig.</small>
+                  </div>
+                </div>
+                <div class="bear-bottom-rows" id="bearBottomRows"></div>
+                <div class="bear-editor-actions">
+                  <button class="bear-editor-action" type="button" id="addBearBottom">+ Boden hinzufügen</button>
+                  <button class="bear-editor-action secondary" type="button" id="resetBearBottoms">Standardböden</button>
+                </div>
+                <p class="bear-bottom-status" id="bearBottomStatus">Zusätzliche Böden aktualisieren CAGR und Abschwächung automatisch.</p>
+              </div>
+
+              <p id="historicalExplanation">Aus jedem benachbarten Bodenpaar wird ein annualisierter CAGR berechnet. Alle gültigen CAGRs kalibrieren eine abflachende Kurve; der neueste Boden dient als Anker.</p>
+              <button class="inline-button" type="button" id="applyHistoricalDefaults">Berechnete Werte als Modell übernehmen</button>
+            </div>
+          </div>
+
+          <div class="model-fields" data-model-fields="powerLaw" hidden>
+            <div class="field">
+              <label for="powerLawExponent">Power-Law-Exponent <span>Standardexponent: 5,8451542</span></label>
+              <div class="input-wrap">
+                <input type="number" id="powerLawExponent" value="5.8451542" min="0.01" max="20" step="0.0001" inputmode="decimal">
+                <span class="unit">β</span>
+              </div>
+            </div>
+            <p class="model-explanation">Der eingegebene Marktpreis gilt für heute und bleibt der Anker. Formel: Preis = Preis heute × (Tage seit Genesis am Zieldatum / Tage seit Genesis heute)<sup>β</sup>. Der Standardexponent 5,8451542 stammt aus einer logarithmischen Bitcoin-Power-Law-Regression. Ausgangspunkt des Bitcoin-Alters ist der 03.01.2009.</p>
+          </div>
+
+          <div class="field" id="fixedWithdrawalField">
+            <label for="monthlyWithdrawal">Monatliche Entnahme <span>fester EUR-Betrag</span></label>
+            <div class="input-wrap">
+              <input type="number" id="monthlyWithdrawal" placeholder="2121" aria-describedby="monthlyWithdrawalExample" min="0" step="50" inputmode="decimal" required>
+              <span class="unit">EUR</span>
+            </div>
+            <small class="input-example" id="monthlyWithdrawalExample">Beispielwert – wird beim Tippen automatisch ausgeblendet.</small>
+          </div>
+
+          <div class="calculated-withdrawal" id="calculatedWithdrawalBox" hidden>
+            <span>Maximal mögliche feste Monatsentnahme</span>
+            <strong id="calculatedWithdrawalValue">Wird berechnet</strong>
+            <small id="calculatedWithdrawalNote">Kapitalerhalt bedeutet: Der nominale Portfolio-Wert liegt nach jedem Simulationsmonat mindestens auf dem heutigen Ausgangswert.</small>
+          </div>
+
+          <div class="field">
+            <label for="simulationYears">Simulationsdauer <span>max. 100 Jahre</span></label>
+            <div class="input-wrap">
+              <input type="number" id="simulationYears" placeholder="21" aria-describedby="simulationYearsExample" min="1" max="100" step="1" inputmode="numeric" required>
+              <span class="unit">Jahre</span>
+            </div>
+            <small class="input-example" id="simulationYearsExample">Beispielwert – bitte gewünschte Laufzeit eintragen.</small>
+          </div>
+
+          <div class="field" id="withdrawalStartField">
+            <label for="withdrawalStart">Beginn der Entnahmen <span>aktueller Monat = heute</span></label>
+            <div class="input-wrap">
+              <input type="month" id="withdrawalStart" required>
+              <span class="unit">Start</span>
+            </div>
+            <p class="model-explanation" id="startPreview">Der heutige BTC-Preis wird bis zum gewählten Entnahmestart mit dem ausgewählten Modell fortgeschrieben.</p>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="primary-button" type="submit" id="submitButton">Simulation starten</button>
+          <button class="secondary-button" type="button" id="resetButton" aria-label="Standardwerte wiederherstellen" title="Standardwerte wiederherstellen">↺</button>
+        </div>
+
+        <p class="assumption" id="assumptionText">
+          Modellannahme: Die Entnahme erfolgt zu Monatsbeginn. Die Jahresrendite folgt einer historisch abgeleiteten Abschwächung und fällt nicht unter die eingestellte Untergrenze. Das bleibt eine Modellrechnung und keine Finanzberatung.
+        </p>
+      </form>
+
+      <div class="results" id="results" aria-live="polite">
+        <section class="summary-grid" aria-label="Ergebnisübersicht">
+          <article class="metric" id="statusCard">
+            <div class="metric-label">Status</div>
+            <div class="metric-value" id="statusValue">–</div>
+            <div class="metric-sub" id="statusSub">Simulation noch nicht gestartet</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label" id="remainingMetricLabel">Restbestand</div>
+            <div class="metric-value" id="remainingBtc">–</div>
+            <div class="metric-sub" id="btcShare">–</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label" id="portfolioMetricLabel">Portfolio-Wert</div>
+            <div class="metric-value" id="portfolioValue">–</div>
+            <div class="metric-sub" id="endPrice">–</div>
+          </article>
+          <article class="metric">
+            <div class="metric-label" id="withdrawalMetricLabel">Gesamt entnommen</div>
+            <div class="metric-value" id="totalWithdrawn">–</div>
+            <div class="metric-sub" id="withdrawnBtc">–</div>
+          </article>
+        </section>
+
+        <section class="panel comparison-panel" id="preserveComparison" hidden>
+          <div class="section-title">
+            <div>
+              <h2>Monatliche Entnahme im Vergleich</h2>
+              <p>Maximaler fester Monatsbetrag ab heute bei nominalem Kapitalerhalt</p>
+            </div>
+            <span class="model-badge">Alle 3 Modelle</span>
+          </div>
+          <div class="comparison-grid">
+            <article class="comparison-card" data-comparison-model="constant">
+              <span>Konstante Rendite</span>
+              <strong id="comparisonConstant">–</strong>
+              <small id="comparisonConstantSub">–</small>
+            </article>
+            <article class="comparison-card" data-comparison-model="decay">
+              <span>Abschwächung</span>
+              <strong id="comparisonDecay">–</strong>
+              <small id="comparisonDecaySub">–</small>
+            </article>
+            <article class="comparison-card" data-comparison-model="powerLaw">
+              <span>Power Law</span>
+              <strong id="comparisonPowerLaw">–</strong>
+              <small id="comparisonPowerLawSub">–</small>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="section-title">
+            <div>
+              <h2>Vermögensentwicklung</h2>
+              <p>Jahreswerte von Portfolio und Bitcoin-Bestand</p>
+            </div>
+            <div class="legend" aria-hidden="true">
+              <span class="legend-item"><span class="legend-dot"></span>Portfolio</span>
+              <span class="legend-item"><span class="legend-dot blue"></span>BTC-Bestand</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="portfolioChart" role="img" aria-label="Diagramm zur Entwicklung des Portfolio-Werts und Bitcoin-Bestands"></canvas>
+          </div>
+        </section>
+
+        <section class="panel table-panel annual-overview-panel">
+          <button
+            class="section-title annual-overview-toggle is-open"
+            type="button"
+            id="annualOverviewToggle"
+            aria-expanded="true"
+            aria-controls="annualOverviewContent"
+          >
+            <span class="annual-overview-heading">
+              <span class="annual-overview-title">Jahresübersicht</span>
+              <span class="annual-overview-subtitle">Kalenderjahre; erstes und letztes Jahr können Teiljahre sein</span>
+            </span>
+            <span class="annual-overview-actions">
+              <span class="model-badge" id="activeModelBadge">Konstante Rendite</span>
+              <span class="annual-overview-chevron" aria-hidden="true">
+                <svg viewBox="0 0 16 16" focusable="false">
+                  <path d="M3.5 6 8 10.5 12.5 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </span>
+            </span>
+          </button>
+
+          <div class="annual-overview-content" id="annualOverviewContent">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Jahr</th>
+                    <th>BTC-Preis</th>
+                    <th>Rest-BTC</th>
+                    <th>Portfolio</th>
+                    <th>Kursrendite</th>
+                    <th>Entnommen</th>
+                  </tr>
+                </thead>
+                <tbody id="yearTableBody"></tbody>
+              </table>
+            </div>
+
+            <details>
+              <summary>Monatliche Detailwerte anzeigen</summary>
+              <div class="monthly-log" id="monthlyLog"></div>
+            </details>
+          </div>
+        </section>
+
+        <section class="panel method-panel" id="modell-herleitung">
+          <div class="section-title">
+            <div>
+              <h2>Historische Herleitung</h2>
+              <p>Wie die Standardwerte für das Abschwächungsmodell entstanden sind</p>
+            </div>
+            <span class="model-badge">Bärenmarkt-Böden · Schlusskurse</span>
+          </div>
+
+          <div class="method-grid">
+            <div class="method-stat"><span>Eingetragene Böden</span><strong id="methodBottomRange">–</strong></div>
+            <div class="method-stat"><span>Neuester Boden-CAGR</span><strong id="methodLatestCagr">–</strong></div>
+            <div class="method-stat"><span>Modellierte Rendite im 1. Jahr</span><strong id="methodCurrentRate">–</strong></div>
+          </div>
+
+          <p class="method-copy" id="methodExplanation">
+            Aus jedem zeitlich benachbarten Bodenpaar wird der nach Kalendertagen annualisierte CAGR berechnet. Die Kehrwerte der Renditeüberschüsse oberhalb der eingestellten Untergrenze werden über die Zeit linear angepasst. Daraus entsteht eine hyperbolisch abflachende Renditekurve. Bei mindestens vier Böden fließen mehrere CAGR-Perioden in die Anpassung ein; der neueste gemessene CAGR bleibt der Anker der Kurve.
+          </p>
+
+          <details>
+            <summary>Bärenmarkt-Böden, CAGRs und Abschwächung anzeigen</summary>
+            <div class="history-table-wrap">
+              <table>
+                <thead><tr><th>Zeitraum</th><th>Startboden</th><th>Endboden</th><th>CAGR p. a.</th><th>CAGR-Abnahme</th></tr></thead>
+                <tbody id="historyTableBody"></tbody>
+              </table>
+            </div>
+          </details>
+        </section>
+      </div>
+    </section>
+
+    <div class="calculator-disclaimer">
+      Keine Finanzberatung · keine Kursgarantie · reine Modellrechnung. Historische Daten und mathematische Modelle können die Zukunft nicht vorhersagen.
+    </div>
+  </main>
+
+  <div data-include="components/footer.html"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/include.js"></script>
+  <script src="js/navigation.js"></script>
+  <script src="js/footer.js"></script>
+  <script src="js/scroll-top.js"></script>
+  <script src="js/hover.js"></script>
+
+  <script src="js/rechner.js"></script>
+</body>
+</html>

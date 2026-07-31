@@ -335,3 +335,69 @@
     padding-bottom: 8px;
   }
 }
+
+
+/* ============================================================
+   MODERNE NAVIGATION – RESPONSIVE FEINSCHLIFF
+   ============================================================ */
+@media (max-width: 1180px) and (min-width: 901px) {
+  .site-header { gap: 10px; }
+  .brand-banner { width: 185px; }
+  .main-nav { gap: 4px; }
+  .page-link { padding-inline: 6px; font-size: 0.67rem; }
+  .nav-group summary { padding-inline: 6px; font-size: 0.67rem; }
+}
+
+@media (max-width: 900px) {
+  .site-header {
+    min-height: 66px;
+    background: rgba(16,18,21,0.985);
+  }
+  :root[data-theme="light"] .site-header { background: rgba(229,224,216,0.985); }
+  .main-nav {
+    top: 62px;
+    gap: 10px;
+    border-color: rgba(247,147,26,0.24);
+    background: rgba(17,19,22,0.99);
+    box-shadow: 0 28px 70px rgba(0,0,0,0.55);
+  }
+  :root[data-theme="light"] .main-nav { background: rgba(239,235,228,0.99); }
+  .nav-primary {
+    gap: 5px;
+    padding: 6px;
+    background: rgba(0,0,0,0.15);
+  }
+  .nav-primary .page-link {
+    justify-content: flex-start;
+    padding: 12px 14px;
+    text-align: left;
+  }
+  .nav-primary .page-link.active {
+    color: #0b0b0b;
+    background: linear-gradient(135deg, var(--orange-light), var(--orange));
+  }
+  .nav-group summary {
+    justify-content: flex-start;
+    padding: 11px 44px 11px 14px;
+    text-align: left;
+    border-color: rgba(255,255,255,0.08);
+  }
+  :root[data-theme="light"] .nav-group summary { border-color: rgba(52,45,37,0.12); }
+  .nav-dropdown { background: rgba(10,11,13,0.55); }
+  :root[data-theme="light"] .nav-dropdown { background: rgba(255,255,255,0.5); }
+}
+
+/* Aktiver Menüpunkt: schwarzer Text auf orangefarbenem Button – auf allen Breiten. */
+.nav-primary .page-link.active,
+.nav-primary .page-link.active:hover,
+.nav-primary .page-link.active:focus-visible {
+  color: #050505 !important;
+  background: linear-gradient(135deg, #ffb347, #f7931a) !important;
+  border-color: rgba(255, 196, 111, 0.82) !important;
+  text-shadow: none !important;
+  transition: none !important;
+}
+
+.nav-primary .page-link.active * {
+  color: #050505 !important;
+}

@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!touchLikeDevice) return;
 
   const cards = [...document.querySelectorAll(
-    ".feature-card, .info-card, .step-card, .screen-card, .metric, .callout, .social-link"
+    ".feature-card, .info-card, .step-card, .screen-card, .metric, .callout, .social-link, .calculator-page .panel, .calculator-page .legal-callout, .calculator-page .comparison-card, .calculator-page .historical-value, .calculator-page .method-stat"
   )];
 
   if (!cards.length) return;
