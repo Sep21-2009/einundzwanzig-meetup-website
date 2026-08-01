@@ -7,7 +7,7 @@ window.SITE_CONFIG = {
   lightningAddress: "creamowl25@primal.net",
 
   // Letzte Blockhöhe, auf die sich der aktuelle Stand der Website bezieht.
-  updatedBlockHeight: 960592,
+  updatedBlockHeight: 960594,
   mempoolBaseUrl: "https://mempool.space/de/block/",
   mempoolApiBaseUrl: "https://mempool.space/api",
   mempoolWebsiteUrl: "https://mempool.space/"

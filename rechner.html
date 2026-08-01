@@ -8,7 +8,7 @@
   <title>Bitcoin-Rentenrechner · Einundzwanzig Koblenz</title>
   <link rel="canonical" href="https://21koblenz.github.io/einundzwanzig-meetup-website/rechner.html">
   <link href="css/style.css?v=20260801-nav-layer-fix-1" rel="stylesheet">
-  <link href="css/rechner.css?v=20260801-unified-currency-1" rel="stylesheet">
+  <link href="css/rechner.css?v=20260801-menu-guide-fix-1" rel="stylesheet">
 </head>
 <body class="calculator-page">
   <div data-include="components/nav.html"></div>
@@ -28,6 +28,10 @@
         <p class="hero-copy">
           Simuliere feste Entnahmen, Kapitalerhalt oder eine 3/4-%-Entnahmeregel. Eine optionale Monte-Carlo-Prognose zeigt, wie empfindlich das Ergebnis auf Kursschwankungen reagiert.
         </p>
+        <div class="hero-actions calculator-guide-actions" aria-label="Anleitungen zum Rechner">
+          <a class="btn btn-primary" href="rechner-anleitung.html">Rechner-Anleitung öffnen</a>
+          <a class="btn btn-secondary" href="lokal-starten.html">Webseite lokal starten</a>
+        </div>
       </div>
 
       <div class="hero-visual" aria-hidden="true">
@@ -289,7 +293,7 @@
           <div class="field" id="dcaField">
             <label for="monthlyDca">Monatlicher DCA bis Rentenstart <span>optional</span></label>
             <div class="input-wrap">
-              <input type="number" id="monthlyDca" placeholder="21" aria-describedby="monthlyDcaExample" min="0" step="25" inputmode="decimal">
+              <input type="number" id="monthlyDca" placeholder="500" aria-describedby="monthlyDcaExample" min="0" step="25" inputmode="decimal">
               <span class="unit currency-unit">EUR</span>
             </div>
             <small class="input-example" id="monthlyDcaExample">Beispielwert. 0 oder leer bedeutet: kein zusätzlicher Kauf. Beim Wechsel zwischen EUR und USD bleibt der eingetragene Zahlenwert bewusst unverändert.</small>
@@ -395,7 +399,6 @@
         <div class="results-scroll-heading" aria-hidden="true">
           <div>
             <strong>Ergebnisse und Details</strong>
-            <small>Eigener Scrollbereich – außerhalb der Karten scrollt die Seite.</small>
           </div>
           <span>↕</span>
         </div>
@@ -608,7 +611,7 @@
   <script src="js/config.js"></script>
   <script src="js/theme.js"></script>
   <script src="js/include.js"></script>
-  <script src="js/navigation.js"></script>
+  <script src="js/navigation.js?v=20260801-menu-guide-fix-1"></script>
 <script src="js/mempool-ticker.js?v=20260801-scroll-dca-1"></script>
   <script src="js/footer.js"></script>
   <script src="js/scroll-top.js"></script>

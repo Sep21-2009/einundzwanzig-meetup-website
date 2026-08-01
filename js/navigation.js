@@ -12,12 +12,17 @@ document.addEventListener("includes:loaded", () => {
 function markCurrentPage() {
   const currentPage = location.pathname.split("/").pop() || "index.html";
 
-  document.querySelectorAll(".page-link[data-page]").forEach((link) => {
-    const isCurrentPage = link.dataset.page === currentPage;
+  document.querySelectorAll(".page-link[data-page], .page-link[data-pages]").forEach((link) => {
+    const pages = link.dataset.pages
+      ? link.dataset.pages.split(",").map((page) => page.trim()).filter(Boolean)
+      : [link.dataset.page];
+    const isCurrentPage = pages.includes(currentPage);
     link.classList.toggle("active", isCurrentPage);
 
     if (isCurrentPage) {
       link.setAttribute("aria-current", "page");
+    } else {
+      link.removeAttribute("aria-current");
     }
   });
 }
@@ -108,6 +113,7 @@ function initialiseStickyHeader() {
   const navigation = document.querySelector(".main-nav");
   const menuButton = document.querySelector(".menu-toggle");
   const groups = Array.from(document.querySelectorAll(".nav-group"));
+  const mobileNavigation = window.matchMedia("(max-width: 900px), (hover: none), (pointer: coarse)");
 
   if (!header) return;
 
@@ -118,8 +124,14 @@ function initialiseStickyHeader() {
     const currentScrollY = window.scrollY;
     header.classList.toggle("scrolled", currentScrollY > 18);
 
-    /* Menüs erst schließen, wenn tatsächlich gescrollt wurde. */
-    if (Math.abs(currentScrollY - previousScrollY) > 2) {
+    /*
+     * Auf Smartphones bleiben das Hauptmenü und geöffnete Untermenüs bewusst
+     * offen. Das Aufklappen eines <details>-Menüs verändert die Seitenhöhe und
+     * kann selbst einen kleinen Scrollimpuls auslösen. Früher wurde "Direkt zu"
+     * dadurch unmittelbar wieder geschlossen. Auf Desktop bleibt das bisherige
+     * automatische Schließen beim echten Scrollen erhalten.
+     */
+    if (!mobileNavigation.matches && Math.abs(currentScrollY - previousScrollY) > 2) {
       groups.forEach((group) => group.removeAttribute("open"));
 
       if (navigation?.classList.contains("open")) {

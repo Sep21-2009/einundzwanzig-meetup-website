@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Anleitung zum Herunterladen der 21Meetup-Webseite von GitHub und zum lokalen Starten unter Windows und Linux.">
+  <title>Webseite lokal starten · Windows und Linux</title>
+  <link href="css/style.css?v=20260801-nav-layer-fix-1" rel="stylesheet">
+  <link href="css/anleitung.css?v=20260801-guide-1" rel="stylesheet">
+</head>
+<body class="guide-page">
+  <div data-include="components/nav.html"></div>
+
+  <main class="page-shell">
+    <section class="hero guide-hero">
+      <div>
+        <div class="eyebrow">GitHub und lokaler Webserver</div>
+        <h1>Die Webseite <span>lokal starten</span></h1>
+        <p class="lead">Die Seite besteht aus statischen HTML-, CSS- und JavaScript-Dateien. Weil Navigation und Footer als gemeinsame Komponenten nachgeladen werden, sollte sie über einen kleinen Webserver und nicht direkt per Doppelklick geöffnet werden.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#windows">Windows</a>
+          <a class="btn btn-secondary" href="#linux">Linux</a>
+        </div>
+      </div>
+      <aside class="guide-hero-card">
+        <strong>Die häufigste Fehlerursache</strong>
+        <p>Wird <code>index.html</code> als <code>file://</code>-Datei geöffnet, können Browser das Nachladen von <code>components/nav.html</code> und <code>components/footer.html</code> blockieren. Ein lokaler HTTP-Server verhindert dieses Problem.</p>
+      </aside>
+    </section>
+
+    <div class="guide-layout">
+      <nav class="guide-toc" aria-label="Inhalt der lokalen Installationsanleitung">
+        <strong>Inhalt</strong>
+        <a href="#download">Von GitHub laden</a>
+        <a href="#struktur">Ordner prüfen</a>
+        <a href="#windows">Windows: Schnellstart</a>
+        <a href="#windows-iis">Windows: IIS</a>
+        <a href="#linux">Linux: Schnellstart</a>
+        <a href="#linux-nginx">Linux: Nginx</a>
+        <a href="#netzwerk">Im Heimnetz öffnen</a>
+        <a href="#aktualisieren">Aktualisieren</a>
+        <a href="#fehler">Fehlerbehebung</a>
+      </nav>
+
+      <div class="guide-content">
+        <section class="guide-section" id="download">
+          <div class="eyebrow">Schritt 1</div>
+          <h2>Projekt von GitHub herunterladen</h2>
+
+          <h3>Variante A: Download als ZIP</h3>
+          <ol>
+            <li>Das GitHub-Repository der Webseite öffnen.</li>
+            <li>Auf die grüne Schaltfläche <strong>Code</strong> klicken.</li>
+            <li><strong>Download ZIP</strong> auswählen.</li>
+            <li>Die heruntergeladene ZIP-Datei vollständig entpacken.</li>
+          </ol>
+          <p>Diese Variante benötigt kein Git und ist für einen ersten Test am einfachsten.</p>
+
+          <h3>Variante B: Mit Git klonen</h3>
+          <p>Auf der GitHub-Seite unter <strong>Code</strong> die HTTPS-Adresse kopieren und im Terminal verwenden:</p>
+          <div class="guide-code"><code>git clone &lt;HTTPS-ADRESSE-DES-REPOSITORYS&gt;
+cd &lt;NAME-DES-REPOSITORYS&gt;</code></div>
+          <p>Der Vorteil: Spätere Aktualisierungen können mit <code>git pull</code> eingespielt werden.</p>
+        </section>
+
+        <section class="guide-section" id="struktur">
+          <div class="eyebrow">Schritt 2</div>
+          <h2>Den richtigen Projektordner erkennen</h2>
+          <p>Der Webserver muss in dem Ordner gestartet werden, in dem sich <code>index.html</code> befindet. Dort sollten unter anderem folgende Dateien und Ordner liegen:</p>
+          <div class="guide-code"><code>index.html
+rechner.html
+rechner-anleitung.html
+lokal-starten.html
+components/
+css/
+js/
+assets/</code></div>
+          <div class="guide-callout warning">
+            <strong>Nicht im übergeordneten Download-Ordner starten</strong>
+            <p>Nach dem Entpacken entsteht manchmal ein zusätzlicher Ordner. Wechsle so lange in die Unterordner, bis <code>index.html</code> direkt sichtbar ist.</p>
+          </div>
+        </section>
+
+        <section class="guide-section" id="windows">
+          <div class="eyebrow">Windows</div>
+          <h2>Schnellstart mit dem Python-Webserver</h2>
+          <p>Für einen lokalen Test ist der in Python enthaltene HTTP-Server ausreichend.</p>
+
+          <h3>1. Python prüfen</h3>
+          <div class="guide-code"><code>py --version</code></div>
+          <p>Wird eine Versionsnummer angezeigt, ist Python vorhanden. Falls der Befehl nicht gefunden wird, Python installieren und beim Setup die Option zum Hinzufügen zum PATH aktivieren.</p>
+
+          <h3>2. PowerShell im Projektordner öffnen</h3>
+          <p>Im Explorer den Ordner mit <code>index.html</code> öffnen. Anschließend in die Adresszeile <code>powershell</code> eingeben und Enter drücken. Alternativ per <code>cd</code> in den Ordner wechseln.</p>
+
+          <h3>3. Webserver starten</h3>
+          <div class="guide-code"><code>py -m http.server 8000 --bind 127.0.0.1</code></div>
+
+          <h3>4. Webseite öffnen</h3>
+          <div class="guide-code"><code>http://127.0.0.1:8000/</code></div>
+          <p>Zum Beenden im PowerShell-Fenster <strong>Strg+C</strong> drücken.</p>
+
+          <div class="guide-callout">
+            <strong>Alternative Befehle</strong>
+            <p>Je nach Installation kann statt <code>py</code> auch <code>python</code> oder <code>python3</code> erforderlich sein.</p>
+          </div>
+        </section>
+
+        <section class="guide-section" id="windows-iis">
+          <div class="eyebrow">Windows dauerhaft</div>
+          <h2>Bereitstellung über IIS</h2>
+          <p>Für einen dauerhaft laufenden lokalen Windows-Webserver kann der in Windows integrierte Internet Information Services verwendet werden.</p>
+          <ol>
+            <li>„Windows-Features aktivieren oder deaktivieren“ öffnen.</li>
+            <li><strong>Internetinformationsdienste</strong> und darunter <strong>Statischer Inhalt</strong> aktivieren.</li>
+            <li>Den vollständigen Projektordner beispielsweise nach <code>C:\inetpub\wwwroot\21meetup</code> kopieren.</li>
+            <li>Im Browser <code>http://localhost/21meetup/</code> öffnen.</li>
+          </ol>
+          <p>Wer die Seite nur gelegentlich testet, benötigt IIS nicht; der Python-Befehl ist einfacher und verändert das System weniger.</p>
+        </section>
+
+        <section class="guide-section" id="linux">
+          <div class="eyebrow">Linux</div>
+          <h2>Schnellstart mit Python</h2>
+
+          <h3>1. In den Projektordner wechseln</h3>
+          <div class="guide-code"><code>cd /pfad/zum/einundzwanzig-meetup-website</code></div>
+
+          <h3>2. Python prüfen</h3>
+          <div class="guide-code"><code>python3 --version</code></div>
+
+          <h3>3. Falls nötig Python installieren</h3>
+          <span class="guide-command-label">Debian / Ubuntu</span>
+          <div class="guide-code"><code>sudo apt update
+sudo apt install python3</code></div>
+          <span class="guide-command-label">Fedora</span>
+          <div class="guide-code"><code>sudo dnf install python3</code></div>
+          <span class="guide-command-label">Arch Linux</span>
+          <div class="guide-code"><code>sudo pacman -S python</code></div>
+
+          <h3>4. Webserver starten</h3>
+          <div class="guide-code"><code>python3 -m http.server 8000 --bind 127.0.0.1</code></div>
+
+          <h3>5. Webseite öffnen</h3>
+          <div class="guide-code"><code>http://127.0.0.1:8000/</code></div>
+          <p>Zum Beenden im Terminal <strong>Strg+C</strong> drücken.</p>
+        </section>
+
+        <section class="guide-section" id="linux-nginx">
+          <div class="eyebrow">Linux dauerhaft</div>
+          <h2>Statischer Webserver mit Nginx</h2>
+          <p>Für einen dauerhaft laufenden Server im Heimnetz ist Nginx geeignet. Das folgende Beispiel verwendet Debian oder Ubuntu.</p>
+
+          <h3>1. Nginx installieren</h3>
+          <div class="guide-code"><code>sudo apt update
+sudo apt install nginx</code></div>
+
+          <h3>2. Projekt kopieren</h3>
+          <div class="guide-code"><code>sudo mkdir -p /var/www/21meetup
+sudo cp -a . /var/www/21meetup/
+sudo chown -R www-data:www-data /var/www/21meetup</code></div>
+          <p>Die Befehle müssen im Projektordner ausgeführt werden. Der Punkt in <code>cp -a .</code> bedeutet „gesamten aktuellen Ordnerinhalt“.</p>
+
+          <h3>3. Nginx-Konfiguration anlegen</h3>
+          <div class="guide-code"><code>sudo nano /etc/nginx/sites-available/21meetup</code></div>
+          <p>Folgenden Inhalt einfügen:</p>
+          <div class="guide-code"><code>server {
+    listen 80;
+    server_name _;
+
+    root /var/www/21meetup;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}</code></div>
+
+          <h3>4. Seite aktivieren</h3>
+          <div class="guide-code"><code>sudo ln -s /etc/nginx/sites-available/21meetup /etc/nginx/sites-enabled/21meetup
+sudo nginx -t
+sudo systemctl reload nginx</code></div>
+          <p>Danach ist die Seite über die IP-Adresse des Linux-Rechners erreichbar. Besteht bereits eine andere Nginx-Seite auf Port 80, muss die Konfiguration an die vorhandene Umgebung angepasst werden.</p>
+        </section>
+
+        <section class="guide-section" id="netzwerk">
+          <div class="eyebrow">Heimnetz</div>
+          <h2>Die Seite auf anderen Geräten öffnen</h2>
+          <p>Der Schnellstart bindet aus Sicherheitsgründen nur an den lokalen Rechner. Für Smartphones oder andere Geräte im selben vertrauenswürdigen Heimnetz kann der Server auf allen Netzwerkschnittstellen lauschen.</p>
+
+          <span class="guide-command-label">Windows</span>
+          <div class="guide-code"><code>py -m http.server 8000 --bind 0.0.0.0</code></div>
+          <span class="guide-command-label">Linux</span>
+          <div class="guide-code"><code>python3 -m http.server 8000 --bind 0.0.0.0</code></div>
+
+          <p>Die lokale IP-Adresse lässt sich unter Windows mit <code>ipconfig</code> und unter Linux mit <code>ip addr</code> anzeigen. Auf dem anderen Gerät wird anschließend beispielsweise folgende Adresse geöffnet:</p>
+          <div class="guide-code"><code>http://192.168.1.50:8000/</code></div>
+          <div class="guide-callout warning">
+            <strong>Nur im vertrauenswürdigen lokalen Netz</strong>
+            <p>Der Python-Testserver bietet keine Anmeldung und keine TLS-Verschlüsselung. Er sollte nicht direkt ins Internet weitergeleitet werden.</p>
+          </div>
+        </section>
+
+        <section class="guide-section" id="aktualisieren">
+          <div class="eyebrow">Updates</div>
+          <h2>Eine neue Version einspielen</h2>
+          <h3>Bei Git-Klon</h3>
+          <div class="guide-code"><code>git pull</code></div>
+          <p>Danach den Browser mit <strong>Strg+F5</strong> beziehungsweise einem Hard Reload neu laden, damit ältere CSS- oder JavaScript-Dateien nicht aus dem Cache verwendet werden.</p>
+
+          <h3>Bei ZIP-Download</h3>
+          <ol>
+            <li>Neue ZIP-Version herunterladen.</li>
+            <li>Vorherige lokale Änderungen sichern.</li>
+            <li>Neue Version in einen frischen Ordner entpacken.</li>
+            <li>Eigene Anpassungen gezielt übernehmen.</li>
+          </ol>
+        </section>
+
+        <section class="guide-section" id="fehler">
+          <div class="eyebrow">Fehlerbehebung</div>
+          <h2>Typische Probleme</h2>
+          <div class="guide-table-wrap">
+            <table class="guide-table">
+              <thead><tr><th>Problem</th><th>Wahrscheinliche Ursache</th><th>Lösung</th></tr></thead>
+              <tbody>
+                <tr><td>Navigation oder Footer fehlen</td><td>Die HTML-Datei wurde per <code>file://</code> geöffnet.</td><td>Einen lokalen HTTP-Server starten und <code>http://127.0.0.1:8000/</code> verwenden.</td></tr>
+                <tr><td>„Address already in use“</td><td>Port 8000 wird bereits benutzt.</td><td>Einen anderen Port wählen, zum Beispiel <code>8080</code>.</td></tr>
+                <tr><td>Seite nicht erreichbar</td><td>Server beendet, falscher Ordner oder falscher Port.</td><td>Terminal offen lassen, Startbefehl erneut prüfen und auf <code>index.html</code> im aktuellen Ordner achten.</td></tr>
+                <tr><td>Live-Preis bleibt leer</td><td>Keine Internetverbindung, API blockiert oder Werbe-/Scriptfilter greift ein.</td><td>Bitcoin-Preis manuell eintragen; die restliche Berechnung funktioniert weiterhin lokal.</td></tr>
+                <tr><td>Änderungen sind nicht sichtbar</td><td>Browser-Cache verwendet alte Dateien.</td><td>Hard Reload mit <strong>Strg+F5</strong> oder Cache für die Seite leeren.</td></tr>
+                <tr><td>Andere Geräte erreichen den Server nicht</td><td>Server bindet nur an 127.0.0.1 oder Firewall blockiert den Port.</td><td>Mit <code>--bind 0.0.0.0</code> starten und Firewall-Regel nur für das lokale Netz prüfen.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="guide-footer-actions">
+            <a class="btn btn-primary" href="index.html">Zur Startseite</a>
+            <a class="btn btn-secondary" href="rechner-anleitung.html">Rechner-Anleitung</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="components/footer.html"></div>
+  <script src="js/config.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/include.js"></script>
+  <script src="js/navigation.js?v=20260801-menu-guide-fix-1"></script>
+  <script src="js/mempool-ticker.js?v=20260801-nav-layer-fix-1"></script>
+  <script src="js/footer.js"></script>
+  <script src="js/hover.js"></script>
+  <script src="js/scroll-top.js"></script>
+</body>
+</html>

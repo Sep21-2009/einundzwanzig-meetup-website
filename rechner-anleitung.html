@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ausführliche Anleitung für den Bitcoin-Rentenrechner mit DCA, Entnahmestrategien, Kursmodellen und Monte-Carlo-Simulation.">
+  <title>Anleitung · Bitcoin-Rentenrechner</title>
+  <link href="css/style.css?v=20260801-nav-layer-fix-1" rel="stylesheet">
+  <link href="css/anleitung.css?v=20260801-guide-1" rel="stylesheet">
+</head>
+<body class="guide-page">
+  <div data-include="components/nav.html"></div>
+
+  <main class="page-shell">
+    <section class="hero guide-hero">
+      <div>
+        <div class="eyebrow">Schritt für Schritt</div>
+        <h1>Den <span>FIRE Rechner</span> richtig verwenden</h1>
+        <p class="lead">Diese Anleitung erklärt nicht nur, welche Felder ausgefüllt werden müssen, sondern auch, was die drei Entnahmestrategien, die Kursmodelle, die DCA-Ansparphase und die Monte-Carlo-Ergebnisse tatsächlich bedeuten.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="rechner.html">Rechner öffnen</a>
+          <a class="btn btn-secondary" href="lokal-starten.html">Webseite lokal starten</a>
+        </div>
+      </div>
+      <aside class="guide-hero-card">
+        <strong>Wichtig vor dem Start</strong>
+        <p>Der Rechner liefert mathematische Szenarien, keine Kursvorhersage. Vergleiche deshalb mehrere Modelle und verändere bewusst Rendite, Volatilität, Rentenstart und Entnahme.</p>
+      </aside>
+    </section>
+
+    <div class="guide-layout">
+      <nav class="guide-toc" aria-label="Inhalt der Rechner-Anleitung">
+        <strong>Inhalt</strong>
+        <a href="#schnellstart">Schnellstart</a>
+        <a href="#grunddaten">Währung, Preis und Bestand</a>
+        <a href="#rechenziel">Rechenziel auswählen</a>
+        <a href="#kursmodelle">Kursmodelle verstehen</a>
+        <a href="#dca-rente">DCA und Rentenstart</a>
+        <a href="#monte-carlo">Monte Carlo</a>
+        <a href="#ergebnisse">Ergebnisse lesen</a>
+        <a href="#arbeitsweise">Sinnvolle Arbeitsweise</a>
+        <a href="#grenzen">Grenzen des Rechners</a>
+      </nav>
+
+      <div class="guide-content">
+        <section class="guide-section" id="schnellstart">
+          <div class="eyebrow">Schnellstart</div>
+          <h2>In acht Schritten zur ersten Berechnung</h2>
+          <div class="guide-quick-steps">
+            <article class="guide-quick-step"><strong>Rechenwährung wählen</strong><p>Oben beim Bitcoin-Preis EUR oder USD auswählen. Diese Währung gilt anschließend für Preise, Entnahmen, Tabellen, Diagramme und Bodenpreise.</p></article>
+            <article class="guide-quick-step"><strong>Bitcoin-Preis prüfen</strong><p>Der Live-Preis wird vorausgewählt. Er kann mit „Live-Preis einsetzen“ aktualisiert oder für ein eigenes Szenario manuell überschrieben werden.</p></article>
+            <article class="guide-quick-step"><strong>Bestand eintragen</strong><p>Den vorhandenen Stack wahlweise in BTC oder Sats eingeben. Beim Umschalten wird die Menge automatisch umgerechnet.</p></article>
+            <article class="guide-quick-step"><strong>Rechenziel wählen</strong><p>Entweder eine feste Monatsentnahme testen, eine tragfähige Entnahme berechnen lassen oder die 3-/4-%-Regel verwenden.</p></article>
+            <article class="guide-quick-step"><strong>Kursmodell wählen</strong><p>Konstante Rendite, Abschwächungsmodell oder Power Law auswählen und die zugehörigen Annahmen kontrollieren.</p></article>
+            <article class="guide-quick-step"><strong>Rentenphase festlegen</strong><p>Rentenstart, Länge der Entnahmephase und optional den monatlichen DCA bis zum Rentenstart eintragen.</p></article>
+            <article class="guide-quick-step"><strong>Monte Carlo einstellen</strong><p>Volatilität, Anzahl der Pfade, Zufallsstart und – bei berechneter Entnahme – das gewünschte Sicherheitsziel auswählen.</p></article>
+            <article class="guide-quick-step"><strong>Mehrere Szenarien vergleichen</strong><p>Nicht nur ein Ergebnis betrachten. Modelle, Volatilität, Entnahme und Rentenstart verändern und die Unterschiede beobachten.</p></article>
+          </div>
+        </section>
+
+        <section class="guide-section" id="grunddaten">
+          <div class="eyebrow">Grunddaten</div>
+          <h2>Währung, Bitcoin-Preis und eigener Bestand</h2>
+
+          <h3>EUR oder USD</h3>
+          <p>Der Währungsumschalter neben dem heutigen Bitcoin-Preis steuert den gesamten Rechner. Bei EUR werden alle Geldwerte in Euro dargestellt, bei USD entsprechend in US-Dollar. Das betrifft unter anderem den BTC-Preis, Entnahmen, Portfolio-Werte, Diagramme, Monte-Carlo-Ergebnisse und die Bärenmarkt-Bodenpreise.</p>
+          <div class="guide-callout">
+            <strong>Besonderheit beim DCA</strong>
+            <p>Der eingetragene DCA-Zahlenwert bleibt beim Währungswechsel bewusst gleich. Aus 500 EUR werden daher 500 USD und nicht ein umgerechneter krummer Betrag. Nach einem Währungswechsel sollte der DCA deshalb kurz geprüft werden.</p>
+          </div>
+
+          <h3>Live-Preis oder eigener Startpreis</h3>
+          <p>Beim Laden übernimmt der Rechner den aktuellen EUR- oder USD-Preis aus dem Live-Ticker der Navigation. Das Eingabefeld bleibt trotzdem frei bearbeitbar. So lassen sich auch Stressszenarien prüfen, beispielsweise ein niedrigerer Einstiegspreis oder ein festgelegter Preis zum heutigen Stichtag.</p>
+
+          <h3>Bitcoin-Bestand in BTC oder Sats</h3>
+          <p>Der vorhandene Stack kann in BTC oder Sats eingegeben werden. Intern rechnet der Rechner mit BTC. Ein Wechsel zwischen beiden Einheiten verändert daher nicht den tatsächlichen Bestand, sondern nur die Darstellung.</p>
+        </section>
+
+        <section class="guide-section" id="rechenziel">
+          <div class="eyebrow">Entnahmestrategie</div>
+          <h2>Was die drei Rechenziele bedeuten</h2>
+          <div class="guide-grid-3">
+            <article class="guide-mini-card">
+              <strong>Feste Entnahme</strong>
+              <p>Du gibst selbst einen monatlichen Betrag vor. Der Rechner zeigt, wie lange der Bestand reicht, wie viele BTC verkauft werden und welches Vermögen am Ende verbleibt.</p>
+            </article>
+            <article class="guide-mini-card">
+              <strong>Entnahme berechnen</strong>
+              <p>Der glatte Modellverlauf sucht den höchsten festen Monatsbetrag, bei dem der nominale Portfoliowert nach keinem Rentenmonat unter das Kapital zum Rentenstart fällt.</p>
+            </article>
+            <article class="guide-mini-card">
+              <strong>3-/4-%-Regel</strong>
+              <p>Die Entnahme im ersten Rentenjahr entspricht dem gewählten Prozentsatz des Kapitals zum Rentenstart. Danach wird der Monatsbetrag einmal jährlich um die angenommene Inflation erhöht.</p>
+            </article>
+          </div>
+
+          <h3>Feste Entnahme</h3>
+          <p>Dieser Modus beantwortet die Frage: „Was passiert, wenn ich jeden Monat genau diesen Betrag entnehme?“ Der Monatsbetrag bleibt nominal gleich. Bei einem steigenden Bitcoin-Preis müssen dafür mit der Zeit weniger BTC verkauft werden; bei fallenden Preisen entsprechend mehr.</p>
+
+          <h3>Entnahme berechnen</h3>
+          <p>Die normale Berechnung arbeitet mit dem gewählten glatten Kursmodell. Sie ist streng: Das Startkapital soll nicht nur am Ende, sondern nach jedem einzelnen Rentenmonat nominal erhalten bleiben. Zusätzlich kann Monte Carlo ein anderes Sicherheitsziel berechnen:</p>
+          <ul>
+            <li><strong>Bestand reicht:</strong> In der gewählten Zielquote können alle Entnahmen bis zum Ende bedient werden. Das Endkapital darf unter dem Startkapital liegen.</li>
+            <li><strong>Startkapital am Ende erhalten:</strong> In der gewählten Zielquote ist das nominale Endkapital mindestens so hoch wie das Kapital zum Rentenstart.</li>
+          </ul>
+
+          <h3>3-/4-%-Regel</h3>
+          <p>Beispiel: Bei 300.000 EUR Kapital zum Rentenstart und 3 % Entnahmesatz ergibt sich im ersten Jahr eine Startentnahme von 750 EUR pro Monat. Bei 2 % Inflationsannahme wird dieser Monatsbetrag nach zwölf Monaten um 2 % erhöht.</p>
+          <div class="guide-callout warning">
+            <strong>Keine „sichere“ Bitcoin-Regel</strong>
+            <p>Die bekannte 3-/4-%-Regel stammt aus Untersuchungen diversifizierter Portfolios. Im Rechner ist sie lediglich eine frei wählbare Entnahmestrategie und keine Garantie für ein reines Bitcoin-Portfolio.</p>
+          </div>
+        </section>
+
+        <section class="guide-section" id="kursmodelle">
+          <div class="eyebrow">Kursannahmen</div>
+          <h2>Die drei Kursmodelle verstehen</h2>
+
+          <h3>Konstante Rendite</h3>
+          <p>Das einfachste Modell verwendet in jedem Jahr dieselbe Rendite. Eine Einstellung von 15 % bedeutet nicht, dass der Kurs jedes Jahr einmal sprunghaft steigt: Der Rechner verteilt das Wachstum auf die einzelnen Monate.</p>
+          <p>Dieses Modell eignet sich gut für Kontrollrechnungen, weil die Annahme leicht nachvollziehbar ist. Es bildet jedoch weder Marktzyklen noch eine langfristige Abschwächung ab.</p>
+
+          <h3>Abnehmende Rendite aus Bärenmarkt-Böden</h3>
+          <p>Aus jedem benachbarten Bodenpaar berechnet der Rechner einen annualisierten Boden-zu-Boden-CAGR. Aus diesen CAGRs wird eine abflachende Renditekurve abgeleitet. Der jüngste beobachtete CAGR dient als zeitlicher Anker; die Rendite nähert sich langfristig der eingestellten Untergrenze.</p>
+          <ul>
+            <li>Ein zusätzlicher Boden erzeugt eine weitere CAGR-Periode.</li>
+            <li>Datum und Bodenpreis müssen zum ausgewählten EUR-/USD-Modus passen.</li>
+            <li>Alle Bodenpreise werden beim Währungswechsel gemeinsam umgerechnet; die prozentualen CAGRs bleiben dadurch gleich.</li>
+            <li>Die Untergrenze ist eine Modellannahme und keine garantierte Mindestrendite.</li>
+          </ul>
+          <div class="guide-callout">
+            <strong>CAGR nicht mit Gesamtgewinn verwechseln</strong>
+            <p>Ein CAGR von 50 % über knapp vier Jahre bedeutet wegen des Zinseszinseffekts einen Gesamtanstieg von deutlich mehr als 200 %. Der CAGR ist die annualisierte Rate, nicht die gesamte Preisänderung.</p>
+          </div>
+
+          <h3>Power Law</h3>
+          <p>Das Power-Law-Modell verknüpft den zukünftigen Preis mit dem Alter des Bitcoin-Netzwerks. Der heutige eingetragene Preis bleibt der feste Anker. Der Exponent bestimmt anschließend die Steilheit:</p>
+          <ul>
+            <li><strong>Kleinerer Exponent:</strong> flachere Kurve und niedrigere zukünftige Modellpreise.</li>
+            <li><strong>Größerer Exponent:</strong> steilere Kurve und höhere zukünftige Modellpreise.</li>
+            <li>Der Exponent ist keine konstante Jahresrendite.</li>
+          </ul>
+        </section>
+
+        <section class="guide-section" id="dca-rente">
+          <div class="eyebrow">Ansparphase</div>
+          <h2>DCA und zukünftiger Rentenstart</h2>
+          <p>Liegt der Rentenstart in der Zukunft, simuliert der Rechner zunächst eine Ansparphase. Der erste DCA-Kauf erfolgt heute, danach monatlich. Der letzte Kauf liegt vor dem ersten Entnahmetag.</p>
+
+          <h3>Normale Berechnung</h3>
+          <p>Jeder DCA-Kauf wird zum Modellpreis des jeweiligen Kaufmonats ausgeführt. Der Rechner verwendet also nicht für alle zukünftigen Käufe den heutigen BTC-Preis.</p>
+
+          <h3>Monte-Carlo-Berechnung</h3>
+          <p>Jeder Zufallspfad besitzt eigene monatliche Preise. Deshalb kauft derselbe DCA-Betrag in jedem Pfad eine andere BTC-Menge. Am Rentenstart unterscheiden sich dadurch sowohl der BTC-Bestand als auch der Portfoliowert zwischen den Simulationen.</p>
+
+          <h3>Wo die Ansparphase sichtbar ist</h3>
+          <ul>
+            <li>in der Vermögensentwicklung ab heute,</li>
+            <li>im Monte-Carlo-Diagramm,</li>
+            <li>in der Jahresübersicht mit DCA-Betrag, Anzahl der Käufe und gekauften BTC,</li>
+            <li>in den monatlichen Detailwerten für jeden einzelnen Kaufmonat.</li>
+          </ul>
+        </section>
+
+        <section class="guide-section" id="monte-carlo">
+          <div class="eyebrow">Zufallspfade</div>
+          <h2>Monte Carlo richtig lesen</h2>
+          <p>Monte Carlo legt zufällige monatliche Schwankungen auf den ausgewählten Modellpfad. Die Simulation ersetzt das Kursmodell also nicht: Das Modell bestimmt den mittleren Verlauf, die Volatilität bestimmt die Streuung darum herum.</p>
+
+          <div class="guide-grid-2">
+            <article class="guide-mini-card"><strong>Volatilität</strong><p>Je höher der Wert, desto breiter liegen gute und schlechte Pfade auseinander. 0 % bedeutet: Alle Pfade folgen exakt dem glatten Modell.</p></article>
+            <article class="guide-mini-card"><strong>Anzahl der Simulationen</strong><p>Mehr Pfade machen Perzentile und Erfolgsquoten stabiler. 1.000 Pfade sind ein guter Arbeitswert; 5.000 liefern ruhigere Ergebnisse, benötigen aber mehr Rechenzeit.</p></article>
+            <article class="guide-mini-card"><strong>Zufallsstart</strong><p>Mit demselben Seed entstehen reproduzierbare Zufallsreihen. „Neue Zufallsreihen“ verändert den Seed und zeigt eine neue Stichprobe.</p></article>
+            <article class="guide-mini-card"><strong>Zielquote</strong><p>Bei 90 % muss das ausgewählte Ziel in mindestens 90 % der Pfade erfüllt sein. Eine höhere Zielquote führt normalerweise zu einer niedrigeren empfohlenen Entnahme.</p></article>
+          </div>
+
+          <h3>P10, Median und P90</h3>
+          <div class="guide-table-wrap">
+            <table class="guide-table">
+              <thead><tr><th>Wert</th><th>Bedeutung</th><th>Interpretation</th></tr></thead>
+              <tbody>
+                <tr><td>P10</td><td>10. Perzentil</td><td>Nur 10 % der simulierten Ergebnisse liegen darunter. Es ist ein schwaches Szenario, aber kein garantiertes Minimum.</td></tr>
+                <tr><td>P50</td><td>Median</td><td>Die Hälfte der Ergebnisse liegt darunter und die andere Hälfte darüber. Der Median ist gegenüber einzelnen extrem hohen Pfaden robuster als der Mittelwert.</td></tr>
+                <tr><td>P90</td><td>90. Perzentil</td><td>Nur 10 % der Ergebnisse liegen darüber. Es ist ein starkes Szenario und keine realistische „Erwartung“.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Warum der Median 0 sein kann</h3>
+          <p>Scheitern mindestens 50 % der Pfade, ist der Median-Endwert zwangsläufig 0. Scheitern mindestens 10 %, kann auch P10 bereits 0 sein. Das ist dann kein Darstellungsfehler, sondern bedeutet, dass ein entsprechender Anteil der simulierten Bestände vorzeitig aufgebraucht wurde.</p>
+
+          <div class="guide-callout warning">
+            <strong>Keine echte Zukunftswahrscheinlichkeit</strong>
+            <p>Die Simulation verwendet eine vereinfachte Verteilung. Reale Bitcoin-Märkte können Crashs, Seitwärtsphasen, Volatilitätscluster und strukturelle Veränderungen zeigen, die dieses Modell nicht vollständig abbildet.</p>
+          </div>
+        </section>
+
+        <section class="guide-section" id="ergebnisse">
+          <div class="eyebrow">Auswertung</div>
+          <h2>So werden die Ergebnisse gelesen</h2>
+          <ul>
+            <li><strong>Statuskarte:</strong> Zeigt, ob der Bestand reicht, aufgebraucht wird oder das gewünschte Kapitalerhalt-Ziel erfüllt ist.</li>
+            <li><strong>Restbestand beziehungsweise Startentnahme:</strong> Abhängig vom Rechenziel wird der verbleibende BTC-Bestand oder die berechnete Monatsentnahme dargestellt.</li>
+            <li><strong>Portfolio-Wert:</strong> Nominaler Wert des verbleibenden BTC-Bestands am Ende der gewählten Laufzeit.</li>
+            <li><strong>Entnommener Gesamtbetrag:</strong> Summe aller tatsächlich bedienten Entnahmen.</li>
+            <li><strong>Monte-Carlo-Karten:</strong> Erfolgsquote, Kapitalerhaltquote und Perzentile der Endwerte.</li>
+            <li><strong>Vermögensdiagramm:</strong> Zeigt DCA-Ansparphase, Rentenstart und Entnahmephase. Das Fadenkreuz liefert Datum, Preis, Bestand und Portfolio-Wert.</li>
+            <li><strong>Jahresübersicht:</strong> Fasst DCA-Käufe, BTC-Bestand, Portfoliowert und Entnahmen nach Kalenderjahren zusammen.</li>
+            <li><strong>Monatliche Details:</strong> Zeigen jeden DCA-Kauf und jede Entnahme monatsgenau.</li>
+          </ul>
+        </section>
+
+        <section class="guide-section" id="arbeitsweise">
+          <div class="eyebrow">Praxis</div>
+          <h2>Eine sinnvolle Vorgehensweise</h2>
+          <ol>
+            <li>Mit dem tatsächlichen Stack, dem aktuellen Live-Preis und dem realistischen Rentenstart beginnen.</li>
+            <li>Den DCA so eintragen, wie er voraussichtlich tatsächlich durchgehalten werden kann.</li>
+            <li>Zuerst ein leicht nachvollziehbares konstantes Modell als Kontrollrechnung verwenden.</li>
+            <li>Danach Abschwächung und Power Law vergleichen.</li>
+            <li>Monte Carlo zunächst mit 0 % Volatilität prüfen. Das Ergebnis muss dann dem glatten Modell folgen.</li>
+            <li>Anschließend mehrere Volatilitäten testen, beispielsweise 15 %, 30 % und 60 %.</li>
+            <li>Mehrere Seeds verwenden und nicht nur den günstigsten Lauf auswählen.</li>
+            <li>Entnahme, Rentenstart und Laufzeit bewusst verschieben, um zu sehen, welche Annahmen den größten Einfluss haben.</li>
+          </ol>
+          <div class="guide-callout">
+            <strong>Gute Entscheidungsfrage</strong>
+            <p>Nicht fragen: „Welche Zahl ist richtig?“ Besser fragen: „Unter welchen Annahmen funktioniert mein Plan noch – und ab wann wird er empfindlich?“</p>
+          </div>
+        </section>
+
+        <section class="guide-section" id="grenzen">
+          <div class="eyebrow">Grenzen</div>
+          <h2>Was nicht automatisch berücksichtigt wird</h2>
+          <ul class="guide-checklist">
+            <li>Steuern und persönliche steuerliche Situation</li>
+            <li>Börsen-, Netzwerk- und Verkaufsgebühren</li>
+            <li>Spread und Liquidität beim tatsächlichen Verkauf</li>
+            <li>Verwahrung, Verlust, Erbschafts- und Sicherheitsrisiken</li>
+            <li>Änderungen der persönlichen Ausgaben</li>
+            <li>Abweichende Inflation einzelner Lebensbereiche</li>
+            <li>Regulatorische, technische oder gesellschaftliche Veränderungen</li>
+          </ul>
+          <p>Die Eingaben und Berechnungen laufen lokal im Browser. Für die Live-Anzeige werden lediglich öffentliche Bitcoin-Preis- und Blockdaten abgerufen. Die persönlichen Rechnerwerte werden nicht an einen Berechnungsserver gesendet.</p>
+          <div class="guide-footer-actions">
+            <a class="btn btn-primary" href="rechner.html">Jetzt selbst rechnen</a>
+            <a class="btn btn-secondary" href="lokal-starten.html">Webseite lokal ausführen</a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <div data-include="components/footer.html"></div>
+  <script src="js/config.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/include.js"></script>
+  <script src="js/navigation.js?v=20260801-menu-guide-fix-1"></script>
+  <script src="js/mempool-ticker.js?v=20260801-nav-layer-fix-1"></script>
+  <script src="js/footer.js"></script>
+  <script src="js/hover.js"></script>
+  <script src="js/scroll-top.js"></script>
+</body>
+</html>
