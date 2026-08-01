@@ -453,3 +453,152 @@
   .live-metric { gap: 4px; }
   .live-updated { display: none; }
 }
+
+/* ============================================================
+   KOMPAKTE NAVIGATION UND BEGRENZTE DROPDOWNS
+   Verhindert, dass Header oder lange Menüs große Teile des
+   sichtbaren Bildschirms überdecken.
+   ============================================================ */
+.site-header {
+  min-height: 0;
+  gap: 14px;
+  row-gap: 4px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.brand-banner {
+  width: min(195px, 22vw);
+}
+
+.brand-sub {
+  margin-top: 2px;
+  font-size: 0.54rem;
+  letter-spacing: 0.17em;
+}
+
+.nav-primary {
+  gap: 2px;
+  padding: 3px;
+  border-radius: 12px;
+}
+
+.main-nav {
+  gap: 6px;
+}
+
+.main-nav a {
+  font-size: 0.70rem;
+}
+
+.page-link,
+.nav-group summary {
+  min-height: 32px;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.nav-group summary {
+  gap: 6px;
+  font-size: 0.69rem;
+}
+
+.theme-toggle,
+.menu-toggle {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+}
+
+.header-theme-toggle {
+  flex-basis: 34px;
+}
+
+.nav-dropdown {
+  top: calc(100% + 7px);
+  min-width: 214px;
+  max-height: min(56vh, 350px);
+  padding: 6px;
+  border-radius: 11px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(247, 147, 26, 0.72) rgba(255, 255, 255, 0.05);
+}
+
+.nav-dropdown::-webkit-scrollbar {
+  width: 7px;
+}
+
+.nav-dropdown::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 999px;
+}
+
+.nav-dropdown::-webkit-scrollbar-thumb {
+  background: rgba(247, 147, 26, 0.72);
+  border-radius: 999px;
+}
+
+.nav-dropdown a {
+  padding: 7px 9px;
+  font-size: 0.68rem;
+  line-height: 1.25;
+}
+
+[data-include="components/nav.html"] .site-header.scrolled {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.bitcoin-live-strip {
+  min-height: 23px;
+  gap: 8px;
+  padding: 2px 7px;
+  border-radius: 8px;
+}
+
+.live-source {
+  gap: 4px;
+  font-size: 0.55rem;
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+}
+
+.live-metric {
+  gap: 4px;
+  font-size: 0.64rem;
+}
+
+.live-label {
+  font-size: 0.52rem;
+}
+
+.live-metric strong {
+  font-size: 0.65rem;
+}
+
+.live-divider {
+  height: 12px;
+}
+
+.live-fiat-switch {
+  padding: 1px;
+  border-radius: 7px;
+}
+
+.live-fiat-switch button {
+  min-width: 34px;
+  min-height: 19px;
+  padding: 2px 5px;
+  font-size: 0.53rem;
+}
+
+.live-updated {
+  font-size: 0.51rem;
+}
