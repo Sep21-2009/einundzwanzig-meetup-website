@@ -1,47 +1,148 @@
 /**
  * Simuliert den Karten-Hover auf Geräten ohne echte Maus.
- * Der Glow wird aktiviert, sobald die Kartenmitte nahe der Bildschirmmitte liegt.
+ *
+ * Rechnerseite:
+ * - Große Karten reagieren früh, sobald ihr oberer Bereich das Sichtfeld erreicht.
+ * - Kleine Karten werden in einer ruhigen Zone um die Bildschirmmitte betont.
+ * - Es wird kein translateY verwendet, damit Android-Browser beim Scrollen nicht flackern.
+ *
+ * Übrige Seiten:
+ * - Der bisherige Fokus nahe der Bildschirmmitte bleibt erhalten.
  */
 document.addEventListener("DOMContentLoaded", () => {
   const touchLikeDevice = window.matchMedia("(hover: none), (pointer: coarse)").matches;
   if (!touchLikeDevice) return;
 
-  const cards = [...document.querySelectorAll(
-    ".feature-card, .info-card, .step-card, .screen-card, .metric, .callout, .social-link, .calculator-page .panel, .calculator-page .legal-callout, .calculator-page .comparison-card, .calculator-page .historical-value, .calculator-page .method-stat"
+  const calculatorLargeCards = [...document.querySelectorAll(
+    ".calculator-page .panel, .calculator-page .legal-callout"
   )];
 
-  if (!cards.length) return;
+  const calculatorSmallCards = [...document.querySelectorAll(
+    ".calculator-page .metric, .calculator-page .comparison-card, .calculator-page .historical-value, .calculator-page .method-stat"
+  )];
 
-  let activeCard = null;
-  let ticking = false;
+  calculatorLargeCards.forEach((card) => card.classList.add("touch-large-card"));
+  calculatorSmallCards.forEach((card) => card.classList.add("touch-small-card"));
 
-  const updateFocusedCard = () => {
-    const viewportCenter = window.innerHeight / 2;
-    let closestCard = null;
-    let closestDistance = Number.POSITIVE_INFINITY;
+  const genericCards = [...document.querySelectorAll(
+    ".feature-card, .info-card, .step-card, .screen-card, .callout, .social-link"
+  )].filter((card) => !card.closest(".calculator-page"));
 
-    cards.forEach((card) => {
-      const rect = card.getBoundingClientRect();
-      const visible = rect.bottom > 0 && rect.top < window.innerHeight;
-      if (!visible) return;
-
-      const cardCenter = rect.top + rect.height / 2;
-      const distance = Math.abs(cardCenter - viewportCenter);
-
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestCard = card;
-      }
+  if ("IntersectionObserver" in window) {
+    /*
+     * Untere Root-Margin: Eine große Karte wird bereits aktiv, wenn ihr oberer
+     * Rand ungefähr in die unteren 82 % des Bildschirms eintritt. Bei sehr hohen
+     * Karten bleibt der Effekt dadurch nicht bis zur Kartenmitte aus.
+     */
+    const largeObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("in-view", entry.isIntersecting);
+      });
+    }, {
+      root: null,
+      rootMargin: "0px 0px -18% 0px",
+      threshold: 0.02
     });
 
-    const focusRange = Math.max(150, window.innerHeight * 0.34);
-    const nextCard = closestDistance <= focusRange ? closestCard : null;
+    calculatorLargeCards.forEach((card) => largeObserver.observe(card));
 
-    if (activeCard !== nextCard) {
-      activeCard?.classList.remove("in-view");
-      nextCard?.classList.add("in-view");
-      activeCard = nextCard;
+    /*
+     * Kleine Rechnerkarten: immer nur eine Karte gleichzeitig. Da sie auf dem
+     * Smartphone untereinander stehen, gibt es keine Gleichstände zwischen zwei
+     * Karten einer Zeile mehr. Der Verzicht auf transform verhindert zusätzlich
+     * das bisherige Aufblitzen beim Wechsel.
+     */
+    let activeSmallCard = null;
+    let smallTicking = false;
+
+    const updateSmallCard = () => {
+      const focusY = window.innerHeight * 0.48;
+      let closest = null;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      calculatorSmallCards.forEach((card) => {
+        if (card.hidden || card.offsetParent === null) return;
+        const rect = card.getBoundingClientRect();
+        if (rect.bottom <= 0 || rect.top >= window.innerHeight) return;
+
+        const center = rect.top + rect.height / 2;
+        const distance = Math.abs(center - focusY);
+        if (distance < closestDistance) {
+          closest = card;
+          closestDistance = distance;
+        }
+      });
+
+      const maxDistance = window.innerHeight * 0.42;
+      const next = closestDistance <= maxDistance ? closest : null;
+
+      if (next !== activeSmallCard) {
+        activeSmallCard?.classList.remove("in-view");
+        next?.classList.add("in-view");
+        activeSmallCard = next;
+      }
+
+      smallTicking = false;
+    };
+
+    const requestSmallUpdate = () => {
+      if (smallTicking) return;
+      smallTicking = true;
+      window.requestAnimationFrame(updateSmallCard);
+    };
+
+    window.addEventListener("scroll", requestSmallUpdate, { passive: true });
+    window.addEventListener("resize", requestSmallUpdate);
+    window.addEventListener("orientationchange", requestSmallUpdate);
+
+    const calculatorRoot = document.querySelector(".calculator-page");
+    if (calculatorRoot && "MutationObserver" in window) {
+      new MutationObserver(requestSmallUpdate).observe(calculatorRoot, {
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["hidden", "style", "class"]
+      });
     }
+
+    requestSmallUpdate();
+
+    const genericObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        entry.target.classList.toggle("in-view", entry.isIntersecting);
+      });
+    }, {
+      root: null,
+      rootMargin: "-30% 0px -30% 0px",
+      threshold: 0.04
+    });
+
+    genericCards.forEach((card) => genericObserver.observe(card));
+    return;
+  }
+
+  /* Fallback für ältere Browser ohne IntersectionObserver. */
+  const allCards = [...calculatorLargeCards, ...calculatorSmallCards, ...genericCards];
+  if (!allCards.length) return;
+
+  let ticking = false;
+  const updateFocusedCards = () => {
+    const viewportHeight = window.innerHeight;
+    const viewportCenter = viewportHeight / 2;
+
+    calculatorLargeCards.forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const active = rect.bottom > 0 && rect.top < viewportHeight * 0.82;
+      card.classList.toggle("in-view", active);
+    });
+
+    [...calculatorSmallCards, ...genericCards].forEach((card) => {
+      const rect = card.getBoundingClientRect();
+      const cardCenter = rect.top + rect.height / 2;
+      const active = rect.bottom > viewportHeight * 0.25 &&
+        rect.top < viewportHeight * 0.75 &&
+        Math.abs(cardCenter - viewportCenter) < viewportHeight * 0.36;
+      card.classList.toggle("in-view", active);
+    });
 
     ticking = false;
   };
@@ -49,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const requestUpdate = () => {
     if (ticking) return;
     ticking = true;
-    window.requestAnimationFrame(updateFocusedCard);
+    window.requestAnimationFrame(updateFocusedCards);
   };
 
   window.addEventListener("scroll", requestUpdate, { passive: true });

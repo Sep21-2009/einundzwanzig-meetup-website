@@ -4,7 +4,7 @@
    sie sich klar vom Seitenhintergrund abhebt.
    ============================================================ */
 .site-header {
-  --nav-text: #d7d8da;
+  --nav-text: #e0e1e3;
   --nav-muted: #b6b8bb;
   position: sticky;
   top: 0;
@@ -15,12 +15,15 @@
   gap: 22px;
   min-height: 76px;
   padding: 11px max(20px, calc((100vw - 1240px) / 2));
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.035), transparent 52%),
-    rgba(17, 19, 22, 0.97);
+  /* Feste, browserunabhängige Schwarzgrau-Fläche.
+     Keine transparente Grundfarbe: Chrome und Brave zeigen dadurch
+     denselben Farbton statt unterschiedlich starkes Schwarz. */
+  background-color: #17191d;
+  background-image: linear-gradient(180deg, #1d2024 0%, #17191d 58%, #141619 100%);
   border-bottom: 1px solid rgba(247, 147, 26, 0.22);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.30), inset 0 -1px rgba(255,255,255,0.025);
-  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   isolation: isolate;
 }
 
@@ -34,6 +37,15 @@
   background: linear-gradient(90deg, transparent, rgba(247,147,26,0.72), transparent);
   opacity: 0.55;
   pointer-events: none;
+  z-index: 0;
+}
+
+/* Alle sichtbaren Header-Inhalte liegen über der dekorativen orangefarbenen
+   Unterkante. Geöffnete Menüs dürfen von dieser Linie niemals überzeichnet
+   werden. */
+.site-header > * {
+  position: relative;
+  z-index: 2;
 }
 
 :root[data-theme="light"] .site-header {
@@ -76,6 +88,7 @@
 .main-nav {
   gap: 9px;
   min-width: 0;
+  z-index: 20;
 }
 
 .nav-primary {
@@ -153,7 +166,11 @@
 
 .page-link::after { display: none; }
 
-.nav-group { position: relative; }
+.nav-group {
+  position: relative;
+  z-index: 1;
+}
+.nav-group[open] { z-index: 200; }
 .nav-group summary {
   display: flex;
   align-items: center;
@@ -201,13 +218,18 @@
   padding: 8px;
   border: 1px solid rgba(247,147,26,0.20);
   border-radius: 14px;
-  background: rgba(18,20,23,0.985);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.46), var(--orange-glow);
-  backdrop-filter: blur(20px);
+  z-index: 210;
+  background-color: #121417;
+  background-image: linear-gradient(180deg, #1a1d21 0%, #111316 100%);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.52);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  isolation: isolate;
 }
 
 :root[data-theme="light"] .nav-dropdown {
-  background: rgba(247,244,239,0.99);
+  background-color: #f7f4ef;
+  background-image: linear-gradient(180deg, #fffdfa 0%, #f1ece5 100%);
   border-color: rgba(160,91,8,0.22);
 }
 
@@ -289,7 +311,8 @@
 [data-include="components/nav.html"] .site-header.scrolled {
   padding-top: 9px;
   padding-bottom: 9px;
-  background: rgba(14, 16, 18, 0.985);
+  background-color: #141619;
+  background-image: linear-gradient(180deg, #191b1f 0%, #141619 100%);
   border-bottom-color: rgba(247, 147, 26, 0.24);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.34);
 }
@@ -298,4 +321,135 @@
   [data-include="components/nav.html"] .site-header.scrolled {
   background: rgba(226, 221, 212, 0.985);
   box-shadow: 0 12px 30px rgba(40, 32, 24, 0.14);
+}
+
+
+/* ============================================================
+   LIVE-BITCOIN-TICKER IN DER NAVIGATION
+   ============================================================ */
+.site-header {
+  flex-wrap: wrap;
+  row-gap: 7px;
+}
+
+.bitcoin-live-strip {
+  order: 10;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 100%;
+  min-width: 0;
+  min-height: 31px;
+  padding: 5px 9px;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 11px;
+  background: rgba(0,0,0,0.18);
+  color: var(--nav-text);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+.bitcoin-live-strip::-webkit-scrollbar { display: none; }
+
+.live-source,
+.live-metric,
+.live-fiat-switch,
+.live-updated {
+  flex: 0 0 auto;
+}
+
+.live-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--nav-muted);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.055em;
+}
+
+.live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #5ee08a;
+  box-shadow: 0 0 10px rgba(94,224,138,0.72);
+}
+.live-dot.is-cached { background: #f7b34d; box-shadow: 0 0 9px rgba(247,179,77,0.58); }
+.live-dot.is-error { background: #ff6b6b; box-shadow: 0 0 9px rgba(255,107,107,0.58); }
+
+.live-metric {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 0.7rem;
+}
+.live-label {
+  color: var(--nav-muted);
+  font-size: 0.58rem;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.live-metric strong {
+  color: #f7f7f8;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+.live-price strong,
+.live-moscow strong { color: var(--orange-light); }
+.live-divider { width: 1px; height: 15px; background: rgba(255,255,255,0.10); flex: 0 0 1px; }
+
+.live-fiat-switch {
+  display: inline-grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 2px;
+  padding: 2px;
+  margin-left: auto;
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: 8px;
+  background: rgba(255,255,255,0.035);
+}
+.live-fiat-switch button {
+  min-width: 38px;
+  min-height: 22px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--nav-muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+.live-fiat-switch button.is-active {
+  color: #080808;
+  background: var(--orange);
+}
+.live-fiat-switch button:focus-visible { outline: 2px solid var(--orange-light); outline-offset: 2px; }
+.live-updated { color: var(--nav-muted); font-size: 0.56rem; font-variant-numeric: tabular-nums; }
+
+:root[data-theme="light"] .bitcoin-live-strip {
+  border-color: rgba(52,45,37,0.11);
+  background: rgba(255,255,255,0.38);
+}
+:root[data-theme="light"] .live-metric strong { color: #24211e; }
+:root[data-theme="light"] .live-price strong,
+:root[data-theme="light"] .live-moscow strong { color: #9d5907; }
+:root[data-theme="light"] .live-divider { background: rgba(52,45,37,0.13); }
+
+@media (max-width: 900px) {
+  .site-header { row-gap: 5px; }
+  .bitcoin-live-strip { min-height: 30px; padding-inline: 7px; }
+  .main-nav { top: 101px; }
+  .live-source { display: none; }
+  .live-fiat-switch { margin-left: 0; }
+}
+
+@media (max-width: 520px) {
+  .bitcoin-live-strip { gap: 8px; border-radius: 9px; }
+  .live-metric { gap: 4px; }
+  .live-updated { display: none; }
 }

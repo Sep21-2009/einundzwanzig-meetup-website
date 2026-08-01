@@ -29,6 +29,8 @@
     border-radius: 18px;
     background: var(--panel);
     box-shadow: var(--shadow);
+    z-index: 200;
+    isolation: isolate;
   }
   .main-nav.open { display: flex; }
   .nav-primary { display: grid; grid-template-columns: 1fr; width: 100%; }
@@ -351,15 +353,18 @@
 @media (max-width: 900px) {
   .site-header {
     min-height: 66px;
-    background: rgba(16,18,21,0.985);
+    background-color: #17191d;
+    background-image: linear-gradient(180deg, #1d2024 0%, #15171a 100%);
   }
   :root[data-theme="light"] .site-header { background: rgba(229,224,216,0.985); }
   .main-nav {
     top: 62px;
     gap: 10px;
     border-color: rgba(247,147,26,0.24);
-    background: rgba(17,19,22,0.99);
+    background-color: #181a1e;
+    background-image: linear-gradient(180deg, #1c1f23 0%, #15171a 100%);
     box-shadow: 0 28px 70px rgba(0,0,0,0.55);
+    z-index: 200;
   }
   :root[data-theme="light"] .main-nav { background: rgba(239,235,228,0.99); }
   .nav-primary {
@@ -383,8 +388,16 @@
     border-color: rgba(255,255,255,0.08);
   }
   :root[data-theme="light"] .nav-group summary { border-color: rgba(52,45,37,0.12); }
-  .nav-dropdown { background: rgba(10,11,13,0.55); }
-  :root[data-theme="light"] .nav-dropdown { background: rgba(255,255,255,0.5); }
+  .nav-dropdown {
+    background-color: #15171a;
+    background-image: linear-gradient(180deg, #1b1d21 0%, #131518 100%);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  :root[data-theme="light"] .nav-dropdown {
+    background-color: #f7f4ef;
+    background-image: linear-gradient(180deg, #fffdfa 0%, #f1ece5 100%);
+  }
 }
 
 /* Aktiver Menüpunkt: schwarzer Text auf orangefarbenem Button – auf allen Breiten. */

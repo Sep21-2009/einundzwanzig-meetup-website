@@ -47,4 +47,35 @@
     <button class="theme-toggle header-theme-toggle" type="button" aria-label="Dark- oder Light-Mode wechseln" title="Dark- oder Light-Mode wechseln"><span class="theme-icon">☀</span></button>
     <button class="menu-toggle" type="button" aria-label="Navigation öffnen" aria-expanded="false">☰</button>
   </div>
+
+
+  <div class="bitcoin-live-strip" id="bitcoinLiveStrip" aria-label="Live Bitcoin-Netzwerkdaten">
+    <span class="live-source" title="Daten von mempool.space"><span class="live-dot" id="bitcoinLiveDot" aria-hidden="true"></span>mempool.space</span>
+
+    <span class="live-metric live-price">
+      <span class="live-label">BTC</span>
+      <strong id="liveBitcoinPrice">–</strong>
+    </span>
+
+    <span class="live-divider" aria-hidden="true"></span>
+
+    <span class="live-metric">
+      <span class="live-label">Block</span>
+      <strong id="liveBlockHeight">–</strong>
+    </span>
+
+    <span class="live-divider" aria-hidden="true"></span>
+
+    <span class="live-metric live-moscow">
+      <span class="live-label">Moscow Time</span>
+      <strong id="liveMoscowTime">–</strong>
+    </span>
+
+    <div class="live-fiat-switch" role="group" aria-label="Fiatwährung für Bitcoin-Preis und Moscow Time">
+      <button type="button" data-live-fiat="USD" aria-pressed="true">USD</button>
+      <button type="button" data-live-fiat="EUR" aria-pressed="false">EUR</button>
+    </div>
+
+    <span class="live-updated" id="liveUpdated" aria-live="polite">lädt …</span>
+  </div>
 </header>

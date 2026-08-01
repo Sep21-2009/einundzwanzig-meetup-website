@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Bitcoin-Rentensimulation mit historisch abgeleiteter Rendite-Abschwächung, Power Law, monatlicher Entnahme und Jahresübersicht.">
+  <meta name="description" content="Bitcoin-Rentensimulation mit verzögertem Rentenstart, DCA, 3/4-%-Entnahmeregel, Kapitalerhalt und Monte-Carlo-Prognose.">
   <meta name="theme-color" content="#0b0d12">
   <title>Bitcoin-Rentenrechner · Einundzwanzig Koblenz</title>
   <link rel="canonical" href="https://21koblenz.github.io/einundzwanzig-meetup-website/rechner.html">
-  <link href="css/style.css" rel="stylesheet">
-  <link href="css/rechner.css" rel="stylesheet">
+  <link href="css/style.css?v=20260801-nav-layer-fix-1" rel="stylesheet">
+  <link href="css/rechner.css?v=20260801-unified-currency-1" rel="stylesheet">
 </head>
 <body class="calculator-page">
   <div data-include="components/nav.html"></div>
@@ -26,7 +26,7 @@
         <div class="eyebrow">Bitcoin Langzeitsimulation</div>
         <h1><span>Bitcoin</span><br>Rentenrechner</h1>
         <p class="hero-copy">
-          Simuliere feste Entnahmen oder berechne den maximalen Monatsbetrag bei nominalem Kapitalerhalt. Alle drei Kursmodelle lassen sich direkt vergleichen.
+          Simuliere feste Entnahmen, Kapitalerhalt oder eine 3/4-%-Entnahmeregel. Eine optionale Monte-Carlo-Prognose zeigt, wie empfindlich das Ergebnis auf Kursschwankungen reagiert.
         </p>
       </div>
 
@@ -58,22 +58,43 @@
         </div>
 
         <div class="input-grid">
-          <div class="field">
-            <label for="bitcoinPrice">Bitcoin-Preis heute <span>Ausgangspunkt der Rechnung</span></label>
-            <div class="input-wrap">
-              <input type="number" id="bitcoinPrice" placeholder="210000" aria-describedby="bitcoinPriceExample" min="0.01" step="100" inputmode="decimal" required> 
-              <span class="unit">EUR</span>
+          <div class="field currency-price-field">
+            <div class="field-label-row">
+              <label for="bitcoinPrice">Bitcoin-Preis heute <span>Live-Vorauswahl oder frei anpassbar</span></label>
+              <div class="amount-unit-switch currency-unit-switch" role="radiogroup" aria-label="Rechenwährung auswählen">
+                <input type="radio" name="calculationCurrency" id="currencyEur" value="EUR">
+                <label for="currencyEur">EUR</label>
+                <input type="radio" name="calculationCurrency" id="currencyUsd" value="USD">
+                <label for="currencyUsd">USD</label>
+              </div>
             </div>
-            <small class="input-example" id="bitcoinPriceExample">Graue Zahl = Beispielwert. Bitte eigenen Wert eintragen.</small>
+            <div class="input-wrap">
+              <input type="number" id="bitcoinPrice" placeholder="Live-Preis wird geladen" aria-describedby="bitcoinPriceExample" min="0.01" step="100" inputmode="decimal" required>
+              <span class="unit currency-unit">EUR</span>
+            </div>
+            <div class="live-price-helper">
+              <button class="inline-button live-price-button" type="button" id="applyLiveBitcoinPrice" disabled>Live-Preis einsetzen</button>
+              <small class="input-example" id="bitcoinPriceExample">Der aktuelle Preis wird aus dem Live-Ticker der Navigation übernommen. Das Feld bleibt frei bearbeitbar.</small>
+              <span class="visually-hidden" id="bitcoinPriceSource" aria-live="polite"></span>
+            </div>
           </div>
 
-          <div class="field">
-            <label for="bitcoinAmount">Bitcoin-Bestand <span>Startmenge</span></label>
-            <div class="input-wrap">
-              <input type="number" id="bitcoinAmount" placeholder="21000000" aria-describedby="bitcoinAmountExample" min="0.00000001" step="0.0001" inputmode="decimal" required>
-              <span class="unit">BTC</span>
+          <div class="field bitcoin-amount-field">
+            <div class="field-label-row">
+              <label for="bitcoinAmount">Bitcoin-Bestand <span>Startmenge</span></label>
+              <div class="amount-unit-switch" role="radiogroup" aria-label="Einheit für den Bitcoin-Bestand">
+                <input type="radio" name="bitcoinAmountUnit" id="bitcoinUnitBtc" value="btc" checked>
+                <label for="bitcoinUnitBtc">BTC</label>
+                <input type="radio" name="bitcoinAmountUnit" id="bitcoinUnitSats" value="sats">
+                <label for="bitcoinUnitSats">Sats</label>
+              </div>
             </div>
-            <small class="input-example" id="bitcoinAmountExample">Beispielwert: 21000000 BTC.</small>
+            <div class="input-wrap">
+              <input type="number" id="bitcoinAmount" placeholder="0.21" aria-describedby="bitcoinAmountExample bitcoinAmountEquivalent" min="0.00000001" step="0.00000001" inputmode="decimal" required>
+              <span class="unit" id="bitcoinAmountUnitLabel">BTC</span>
+            </div>
+            <small class="input-example" id="bitcoinAmountExample">Beispielwert: 0,21 BTC. Alternativ auf Sats wechseln.</small>
+            <small class="amount-equivalent" id="bitcoinAmountEquivalent" hidden></small>
           </div>
 
           <div class="field">
@@ -90,7 +111,14 @@
                 <input type="radio" name="calculationMode" id="modePreserve" value="preserve">
                 <label for="modePreserve">
                   <strong>Entnahme berechnen</strong>
-                  <small>Maximaler Festbetrag bei Kapitalerhalt ab heute</small>
+                  <small>Maximaler Festbetrag ab dem gewählten Rentenstart</small>
+                </label>
+              </div>
+              <div class="goal-option">
+                <input type="radio" name="calculationMode" id="modeSafeRule" value="safeRule">
+                <label for="modeSafeRule">
+                  <strong>3/4-%-Regel</strong>
+                  <small>Startentnahme aus dem Kapital zum Rentenbeginn</small>
                 </label>
               </div>
             </div>
@@ -172,7 +200,7 @@
                 <div class="bear-editor-head">
                   <div>
                     <strong>Bärenmarkt-Böden</strong>
-                    <small>Datum und Schlusskurs in USD. Mindestens drei Böden sind nötig.</small>
+                    <small id="bearBottomCurrencyNote">Datum und Schlusskurs in EUR. Mindestens drei Böden sind nötig. Beim Währungswechsel werden vorhandene Bodenpreise gemeinsam umgerechnet; die CAGRs bleiben unverändert.</small>
                   </div>
                 </div>
                 <div class="bear-bottom-rows" id="bearBottomRows"></div>
@@ -196,26 +224,52 @@
                 <span class="unit">β</span>
               </div>
             </div>
-            <p class="model-explanation">Der eingegebene Marktpreis gilt für heute und bleibt der Anker. Formel: Preis = Preis heute × (Tage seit Genesis am Zieldatum / Tage seit Genesis heute)<sup>β</sup>. Der Standardexponent 5,8451542 stammt aus einer logarithmischen Bitcoin-Power-Law-Regression. Ausgangspunkt des Bitcoin-Alters ist der 03.01.2009.</p>
+            <div class="power-law-explanation">
+              <p>Der eingegebene Marktpreis gilt für heute und bleibt unverändert der Anker. Der Exponent <strong>β</strong> bestimmt, wie steil die zukünftige Kurve mit dem Bitcoin-Alter ansteigt. Er ist keine feste Jahresrendite.</p>
+              <div class="power-law-direction" aria-label="Auswirkung des Power-Law-Exponenten">
+                <span><strong>β verkleinern</strong><small>flachere Kurve · geringere zukünftige Preise</small></span>
+                <span class="is-standard"><strong>β = 5,8451542</strong><small>hinterlegter Standard</small></span>
+                <span><strong>β vergrößern</strong><small>steilere Kurve · höhere zukünftige Preise</small></span>
+              </div>
+              <p class="power-law-impact" id="powerLawImpact">Die Auswirkung wird aus dem eingetragenen Exponenten berechnet.</p>
+              <p class="model-explanation">Formel: Preis = Preis heute × (Bitcoin-Alter am Zieldatum / Bitcoin-Alter heute)<sup>β</sup>. Ausgangspunkt des Bitcoin-Alters ist der 03.01.2009. Weil das Modell am heutigen Preis verankert ist, verändert β den heutigen Preis nicht, sondern nur den Verlauf davor und danach.</p>
+            </div>
           </div>
 
           <div class="field" id="fixedWithdrawalField">
-            <label for="monthlyWithdrawal">Monatliche Entnahme <span>fester EUR-Betrag</span></label>
+            <label for="monthlyWithdrawal">Monatliche Entnahme <span>fester Betrag in der Rechenwährung</span></label>
             <div class="input-wrap">
               <input type="number" id="monthlyWithdrawal" placeholder="2121" aria-describedby="monthlyWithdrawalExample" min="0" step="50" inputmode="decimal" required>
-              <span class="unit">EUR</span>
+              <span class="unit currency-unit">EUR</span>
             </div>
             <small class="input-example" id="monthlyWithdrawalExample">Beispielwert – wird beim Tippen automatisch ausgeblendet.</small>
           </div>
 
-          <div class="calculated-withdrawal" id="calculatedWithdrawalBox" hidden>
-            <span>Maximal mögliche feste Monatsentnahme</span>
-            <strong id="calculatedWithdrawalValue">Wird berechnet</strong>
-            <small id="calculatedWithdrawalNote">Kapitalerhalt bedeutet: Der nominale Portfolio-Wert liegt nach jedem Simulationsmonat mindestens auf dem heutigen Ausgangswert.</small>
+          <div class="model-fields withdrawal-rule-fields" id="safeWithdrawalFields" hidden>
+            <div class="field">
+              <label for="safeWithdrawalRate">Entnahmesatz im ersten Rentenjahr <span>bezogen auf das Startkapital</span></label>
+              <div class="rate-presets" aria-label="Entnahmesatz auswählen">
+                <button type="button" data-safe-rate="3">3,0 %</button>
+                <button type="button" data-safe-rate="3.9">3,9 %</button>
+                <button type="button" data-safe-rate="4">4,0 %</button>
+              </div>
+              <div class="input-wrap">
+                <input type="number" id="safeWithdrawalRate" value="3" min="0.1" max="20" step="0.1" inputmode="decimal">
+                <span class="unit">% p. a.</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="inflationRate">Jährliche Erhöhung der Entnahme <span>Inflationsannahme</span></label>
+              <div class="input-wrap">
+                <input type="number" id="inflationRate" value="2" min="-10" max="50" step="0.1" inputmode="decimal">
+                <span class="unit">%</span>
+              </div>
+            </div>
+            <p class="model-explanation">Die klassische Regel nimmt im ersten Rentenjahr den eingestellten Prozentsatz des Kapitals zum Rentenstart und erhöht anschließend den Betrag in der gewählten Rechenwährung einmal pro Jahr um die Inflation. 4 % ist die klassische 30-Jahres-Faustregel für breit gestreute Aktien-/Anleiheportfolios. 3,9 % dient als aktueller Vergleichswert aus einer Untersuchung für ein diversifiziertes 30-Jahres-Portfolio; 3 % ist die vorsichtigere Auswahl für längere Zeiträume. Diese Werte lassen sich nicht direkt auf Bitcoin übertragen und garantieren keine dauerhafte Rente.</p>
           </div>
 
           <div class="field">
-            <label for="simulationYears">Simulationsdauer <span>max. 100 Jahre</span></label>
+            <label for="simulationYears">Dauer der Entnahmephase <span>max. 100 Jahre ab Rentenstart</span></label>
             <div class="input-wrap">
               <input type="number" id="simulationYears" placeholder="21" aria-describedby="simulationYearsExample" min="1" max="100" step="1" inputmode="numeric" required>
               <span class="unit">Jahre</span>
@@ -224,12 +278,106 @@
           </div>
 
           <div class="field" id="withdrawalStartField">
-            <label for="withdrawalStart">Beginn der Entnahmen <span>aktueller Monat = heute</span></label>
+            <label for="withdrawalStart">Start der Rente <span>z. B. 2035 oder 2038</span></label>
             <div class="input-wrap">
               <input type="month" id="withdrawalStart" required>
               <span class="unit">Start</span>
             </div>
-            <p class="model-explanation" id="startPreview">Der heutige BTC-Preis wird bis zum gewählten Entnahmestart mit dem ausgewählten Modell fortgeschrieben.</p>
+            <p class="model-explanation">Bis zu diesem Monat läuft die Ansparphase. Die Entnahmephase beginnt anschließend mit dem ausgewählten Kursmodell.</p>
+          </div>
+
+          <div class="field" id="dcaField">
+            <label for="monthlyDca">Monatlicher DCA bis Rentenstart <span>optional</span></label>
+            <div class="input-wrap">
+              <input type="number" id="monthlyDca" placeholder="21" aria-describedby="monthlyDcaExample" min="0" step="25" inputmode="decimal">
+              <span class="unit currency-unit">EUR</span>
+            </div>
+            <small class="input-example" id="monthlyDcaExample">Beispielwert. 0 oder leer bedeutet: kein zusätzlicher Kauf. Beim Wechsel zwischen EUR und USD bleibt der eingetragene Zahlenwert bewusst unverändert.</small>
+            <p class="model-explanation dca-timing-note">Der erste Kauf erfolgt heute, danach monatlich; der letzte Kauf liegt vor dem Rentenstart. Gebühren werden nicht berücksichtigt.</p>
+          </div>
+
+          <div class="start-capital-preview" id="startCapitalPreview" aria-live="polite">
+            <span>Voraussichtliches Kapital zum Rentenstart</span>
+            <strong id="startCapitalValue">Bitte Ausgangswerte eintragen</strong>
+            <small id="startPreview">Der heutige BTC-Bestand und alle DCA-Käufe werden bis zum gewählten Startdatum mit dem ausgewählten Modell berechnet.</small>
+          </div>
+
+          <div class="calculated-withdrawal" id="calculatedWithdrawalBox" hidden>
+            <span>Maximal mögliche feste Monatsentnahme ab Rentenstart</span>
+            <strong id="calculatedWithdrawalValue">Wird berechnet</strong>
+            <small id="calculatedWithdrawalNote">Kapitalerhalt bedeutet: Der nominale Portfolio-Wert bleibt nach jedem Rentenmonat mindestens auf dem Kapital zum Rentenstart.</small>
+          </div>
+
+          <div class="calculated-withdrawal safe-withdrawal-box" id="safeWithdrawalBox" hidden>
+            <span>Startentnahme nach der 3/4-%-Regel</span>
+            <strong id="safeWithdrawalValue">Wird berechnet</strong>
+            <small id="safeWithdrawalNote">Der Betrag wird aus dem voraussichtlichen Kapital zum Rentenstart berechnet und jährlich um die eingestellte Inflation angepasst.</small>
+          </div>
+
+          <div class="model-fields monte-carlo-settings">
+            <div class="monte-carlo-toggle-row">
+              <div>
+                <strong>Monte-Carlo-Prognose</strong>
+                <small>Zufällige Kursverläufe rund um das gewählte Modell</small>
+              </div>
+              <label class="switch" for="monteCarloEnabled">
+                <input type="checkbox" id="monteCarloEnabled" checked>
+                <span aria-hidden="true"></span>
+              </label>
+            </div>
+            <div class="monte-carlo-inputs" id="monteCarloInputs">
+              <div class="field">
+                <label for="annualVolatility">Jährliche Volatilität <span>freie Modellannahme</span></label>
+                <div class="input-wrap">
+                  <input type="number" id="annualVolatility" value="60" min="0" max="300" step="1" inputmode="decimal">
+                  <span class="unit">%</span>
+                </div>
+              </div>
+              <div class="field">
+                <label for="monteCarloRuns">Anzahl Simulationen <span>mehr = ruhigeres Ergebnis</span></label>
+                <div class="input-wrap">
+                  <input type="number" id="monteCarloRuns" value="1000" min="100" max="5000" step="100" inputmode="numeric">
+                  <span class="unit">Pfade</span>
+                </div>
+              </div>
+              <div class="mc-target-settings" id="monteCarloTargetField" hidden>
+                <div class="field">
+                  <label>Monte-Carlo-Ziel <span>für „Entnahme berechnen“</span></label>
+                  <div class="mc-target-selector" role="radiogroup" aria-label="Ziel der Monte-Carlo-Entnahme auswählen">
+                    <div class="mc-target-option">
+                      <input type="radio" name="monteCarloTargetGoal" id="mcGoalSurvival" value="survival" checked>
+                      <label for="mcGoalSurvival">
+                        <strong>Bestand reicht</strong>
+                        <small>In mindestens der Zielquote können alle Entnahmen bis zum Ende bedient werden.</small>
+                      </label>
+                    </div>
+                    <div class="mc-target-option">
+                      <input type="radio" name="monteCarloTargetGoal" id="mcGoalPreserveEnd" value="preserveEnd">
+                      <label for="mcGoalPreserveEnd">
+                        <strong>Startkapital am Ende erhalten</strong>
+                        <small>In mindestens der Zielquote ist das nominale Endkapital mindestens so hoch wie zum Rentenstart.</small>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="monteCarloTargetSuccess">Zielquote <span>für das ausgewählte Ziel</span></label>
+                  <div class="input-wrap">
+                    <input type="number" id="monteCarloTargetSuccess" value="90" min="50" max="99.9" step="0.1" inputmode="decimal">
+                    <span class="unit">%</span>
+                  </div>
+                  <small class="field-note" id="monteCarloTargetHelp">Die maximale feste Monatsentnahme wird so gewählt, dass der BTC-Bestand in mindestens 90 % der Zufallspfade bis zum Ende reicht.</small>
+                </div>
+              </div>
+              <div class="field">
+                <label for="monteCarloSeed">Zufallsstart <span>gleicher Wert = reproduzierbar</span></label>
+                <div class="input-wrap">
+                  <input type="number" id="monteCarloSeed" value="21" min="1" max="2147483646" step="1" inputmode="numeric">
+                  <span class="unit">Seed</span>
+                </div>
+              </div>
+            </div>
+            <p class="model-explanation">Die Simulation streut monatliche Renditen lognormal um den ausgewählten Kursverlauf. Der glatte Kursverlauf bildet dabei den Medianpfad: Bei 0 % Volatilität entspricht Monte Carlo exakt dem gewählten Modell. Sie bildet Bitcoin-Crashs und Marktzyklen dennoch nicht vollständig ab und ist keine Wahrscheinlichkeit für die echte Zukunft.</p>
           </div>
         </div>
 
@@ -243,7 +391,14 @@
         </p>
       </form>
 
-      <div class="results" id="results" aria-live="polite">
+      <div class="results results-scroll-panel" id="results" aria-live="polite">
+        <div class="results-scroll-heading" aria-hidden="true">
+          <div>
+            <strong>Ergebnisse und Details</strong>
+            <small>Eigener Scrollbereich – außerhalb der Karten scrollt die Seite.</small>
+          </div>
+          <span>↕</span>
+        </div>
         <section class="summary-grid" aria-label="Ergebnisübersicht">
           <article class="metric" id="statusCard">
             <div class="metric-label">Status</div>
@@ -271,7 +426,7 @@
           <div class="section-title">
             <div>
               <h2>Monatliche Entnahme im Vergleich</h2>
-              <p>Maximaler fester Monatsbetrag ab heute bei nominalem Kapitalerhalt</p>
+              <p>Maximaler fester Monatsbetrag ab dem gewählten Rentenstart bei nominalem Erhalt des dann vorhandenen Startkapitals</p>
             </div>
             <span class="model-badge">Alle 3 Modelle</span>
           </div>
@@ -294,19 +449,71 @@
           </div>
         </section>
 
+        <section class="panel monte-carlo-panel" id="monteCarloPanel" hidden>
+          <div class="section-title">
+            <div>
+              <h2>Monte-Carlo-Prognose</h2>
+              <p id="monteCarloSubtitle">Zufällige Kursverläufe für das ausgewählte Modell</p>
+            </div>
+            <button class="mc-rerun-button" type="button" id="rerunMonteCarlo">Neue Zufallsreihen</button>
+          </div>
+          <div class="monte-carlo-grid">
+            <article class="mc-metric" id="mcSuccessMetric"><span>Rente reicht bis zum Ende</span><strong id="mcSuccessRate">–</strong><small id="mcSuccessSub">–</small></article>
+            <article class="mc-metric" id="mcPreserveMetric"><span>Endwert mindestens Startkapital</span><strong id="mcPreserveRate">–</strong><small>Nominal, ohne Kaufkraftbereinigung</small></article>
+            <article class="mc-metric"><span>Median-Endwert</span><strong id="mcMedianFinal">–</strong><small id="mcMedianSub">50. Perzentil</small></article>
+            <article class="mc-metric"><span>Schwaches Szenario</span><strong id="mcP10Final">–</strong><small>10. Perzentil des Endwerts</small></article>
+          </div>
+          <div class="mc-withdrawal-result" id="mcWithdrawalResult" hidden>
+            <div>
+              <span id="mcWithdrawalLabel">Monte-Carlo-Entnahme</span>
+              <strong id="mcWithdrawalValue">–</strong>
+            </div>
+            <p id="mcWithdrawalNote">–</p>
+          </div>
+          <div class="mc-chart-guide">
+            <span><strong>X-Achse:</strong> Kalenderjahre ab heute. Die blau hinterlegte Ansparphase enthält alle monatlichen DCA-Käufe; die gestrichelte Linie markiert den Rentenstart.</span>
+            <div class="mc-chart-legend" aria-label="Legende">
+              <span><i class="p10"></i>P10 · schwaches Szenario</span>
+              <span><i class="p50"></i>Median · P50</span>
+              <span><i class="p90"></i>P90 · starkes Szenario</span>
+            </div>
+          </div>
+          <div class="mc-chart-wrap" id="monteCarloChartWrap">
+            <canvas id="monteCarloChart" tabindex="0" role="img" aria-label="Interaktives Monte-Carlo-Band ab heute einschließlich DCA-Ansparphase, Rentenstart und Rentenphase"></canvas>
+            <div class="mc-chart-tooltip" id="monteCarloTooltip" hidden aria-live="polite">
+              <strong id="mcTooltipTitle">Rentenstart</strong>
+              <span><i class="p90"></i>P90 <b id="mcTooltipP90">–</b></span>
+              <span><i class="p50"></i>Median <b id="mcTooltipP50">–</b></span>
+              <span><i class="p10"></i>P10 <b id="mcTooltipP10">–</b></span>
+            </div>
+          </div>
+          <p class="mc-note" id="monteCarloNote">Monte-Carlo-Ergebnis noch nicht berechnet.</p>
+        </section>
+
         <section class="panel chart-panel">
           <div class="section-title">
             <div>
               <h2>Vermögensentwicklung</h2>
-              <p>Jahreswerte von Portfolio und Bitcoin-Bestand</p>
+              <p>Monatsgenauer Verlauf von heute über die DCA-Ansparphase bis zum Ende der Rente</p>
             </div>
-            <div class="legend" aria-hidden="true">
+            <div class="legend" aria-label="Legende">
               <span class="legend-item"><span class="legend-dot"></span>Portfolio</span>
               <span class="legend-item"><span class="legend-dot blue"></span>BTC-Bestand</span>
+              <span class="legend-item"><span class="legend-swatch dca"></span>DCA-/Ansparphase</span>
             </div>
           </div>
-          <div class="chart-wrap">
-            <canvas id="portfolioChart" role="img" aria-label="Diagramm zur Entwicklung des Portfolio-Werts und Bitcoin-Bestands"></canvas>
+          <div class="portfolio-chart-guide">
+            <span>Fahre mit Maus oder Finger über die Grafik. Die gestrichelte Markierung zeigt den Rentenstart.</span>
+          </div>
+          <div class="chart-wrap portfolio-chart-wrap" id="portfolioChartWrap">
+            <canvas id="portfolioChart" tabindex="0" role="img" aria-label="Interaktiver Verlauf von Portfolio-Wert und Bitcoin-Bestand ab heute einschließlich DCA-Ansparphase und Rentenphase"></canvas>
+            <div class="mc-chart-tooltip portfolio-chart-tooltip" id="portfolioChartTooltip" hidden aria-live="polite">
+              <strong id="portfolioTooltipTitle">Heute</strong>
+              <span><i class="portfolio"></i>Portfolio <b id="portfolioTooltipValue">–</b></span>
+              <span><i class="btc"></i>BTC-Bestand <b id="portfolioTooltipBtc">–</b></span>
+              <span><i class="price"></i>BTC-Preis <b id="portfolioTooltipPrice">–</b></span>
+              <span id="portfolioTooltipActionRow"><i class="action"></i><span id="portfolioTooltipActionLabel">Vorgang</span> <b id="portfolioTooltipAction">–</b></span>
+            </div>
           </div>
         </section>
 
@@ -320,7 +527,7 @@
           >
             <span class="annual-overview-heading">
               <span class="annual-overview-title">Jahresübersicht</span>
-              <span class="annual-overview-subtitle">Kalenderjahre; erstes und letztes Jahr können Teiljahre sein</span>
+              <span class="annual-overview-subtitle">Kalenderjahre einschließlich DCA-Ansparphase; erstes und letztes Jahr können Teiljahre sein</span>
             </span>
             <span class="annual-overview-actions">
               <span class="model-badge" id="activeModelBadge">Konstante Rendite</span>
@@ -338,10 +545,13 @@
                 <thead>
                   <tr>
                     <th>Jahr</th>
+                    <th>Phase</th>
                     <th>BTC-Preis</th>
-                    <th>Rest-BTC</th>
+                    <th>BTC-Bestand</th>
                     <th>Portfolio</th>
                     <th>Kursrendite</th>
+                    <th>DCA investiert</th>
+                    <th>DCA-BTC</th>
                     <th>Entnommen</th>
                   </tr>
                 </thead>
@@ -350,7 +560,7 @@
             </div>
 
             <details>
-              <summary>Monatliche Detailwerte anzeigen</summary>
+              <summary>Monatliche Detailwerte einschließlich DCA-Ansparphase anzeigen</summary>
               <div class="monthly-log" id="monthlyLog"></div>
             </details>
           </div>
@@ -362,7 +572,7 @@
               <h2>Historische Herleitung</h2>
               <p>Wie die Standardwerte für das Abschwächungsmodell entstanden sind</p>
             </div>
-            <span class="model-badge">Bärenmarkt-Böden · Schlusskurse</span>
+            <span class="model-badge" id="historyCurrencyBadge">Bärenmarkt-Böden · Schlusskurse in EUR</span>
           </div>
 
           <div class="method-grid">
@@ -379,7 +589,7 @@
             <summary>Bärenmarkt-Böden, CAGRs und Abschwächung anzeigen</summary>
             <div class="history-table-wrap">
               <table>
-                <thead><tr><th>Zeitraum</th><th>Startboden</th><th>Endboden</th><th>CAGR p. a.</th><th>CAGR-Abnahme</th></tr></thead>
+                <thead><tr><th>Zeitraum</th><th id="historyStartPriceHeading">Startboden (EUR)</th><th id="historyEndPriceHeading">Endboden (EUR)</th><th>CAGR p. a.</th><th>CAGR-Abnahme</th></tr></thead>
                 <tbody id="historyTableBody"></tbody>
               </table>
             </div>
@@ -399,10 +609,11 @@
   <script src="js/theme.js"></script>
   <script src="js/include.js"></script>
   <script src="js/navigation.js"></script>
+<script src="js/mempool-ticker.js?v=20260801-scroll-dca-1"></script>
   <script src="js/footer.js"></script>
   <script src="js/scroll-top.js"></script>
   <script src="js/hover.js"></script>
 
-  <script src="js/rechner.js"></script>
+  <script src="js/rechner.js?v=20260801-unified-currency-1"></script>
 </body>
 </html>
