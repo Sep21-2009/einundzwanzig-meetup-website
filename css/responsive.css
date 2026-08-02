@@ -332,7 +332,7 @@
     background: rgba(247, 147, 26, 0.08);
   }
 
-  [data-include="components/nav.html"] .site-header.scrolled {
+  .site-navigation-host .site-header.scrolled {
     padding-top: 8px;
     padding-bottom: 8px;
   }
@@ -518,7 +518,7 @@
     font-size: 0.67rem;
   }
 
-  [data-include="components/nav.html"] .site-header.scrolled {
+  .site-navigation-host .site-header.scrolled {
     padding-top: 4px;
     padding-bottom: 4px;
   }
@@ -560,5 +560,40 @@
 
   .nav-dropdown {
     max-height: 34dvh;
+  }
+}
+
+
+/* Sanfte Größenänderung der gemeinsamen Navigation auf Mobilgeräten. */
+@media (max-width: 900px) {
+  .site-header {
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+
+  .site-navigation-host .site-header.scrolled {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  .site-header.scrolled .brand-banner {
+    width: min(159px, 46vw);
+  }
+
+  .site-header.scrolled .header-theme-toggle,
+  .site-header.scrolled .menu-toggle {
+    width: 31px;
+    height: 31px;
+  }
+
+  .site-header.scrolled .nav-primary .page-link,
+  .site-header.scrolled .nav-group summary {
+    min-height: 33px;
+  }
+}
+
+@media (max-width: 520px) {
+  .site-header.scrolled .brand-banner {
+    width: min(143px, 44vw);
   }
 }

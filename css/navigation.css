@@ -18,8 +18,8 @@
   /* Feste, browserunabhängige Schwarzgrau-Fläche.
      Keine transparente Grundfarbe: Chrome und Brave zeigen dadurch
      denselben Farbton statt unterschiedlich starkes Schwarz. */
-  background-color: #17191d;
-  background-image: linear-gradient(180deg, #1d2024 0%, #17191d 58%, #141619 100%);
+  background-color: #2e3239;
+  background-image: linear-gradient(180deg, #1d2024 0%, #2e3239 58%, #141619 100%);
   border-bottom: 1px solid rgba(247, 147, 26, 0.22);
   box-shadow: 0 12px 34px rgba(0, 0, 0, 0.30), inset 0 -1px rgba(255,255,255,0.025);
   -webkit-backdrop-filter: none;
@@ -289,7 +289,7 @@
    Dadurch bleibt die Navigation auch dann sichtbar, wenn sie per
    JavaScript aus components/nav.html geladen wurde.
    ============================================================ */
-[data-include="components/nav.html"] {
+.site-navigation-host {
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -297,7 +297,7 @@
 
 /* Der Header liegt innerhalb des Sticky-Platzhalters und muss daher
    nicht selbst erneut sticky positioniert werden. */
-[data-include="components/nav.html"] .site-header {
+.site-navigation-host .site-header {
   position: relative;
   z-index: 1;
   transition:
@@ -308,7 +308,7 @@
 }
 
 /* Sichtbare Abgrenzung, sobald der Besucher nach unten gescrollt hat. */
-[data-include="components/nav.html"] .site-header.scrolled {
+.site-navigation-host .site-header.scrolled {
   padding-top: 9px;
   padding-bottom: 9px;
   background-color: #141619;
@@ -318,7 +318,7 @@
 }
 
 :root[data-theme="light"]
-  [data-include="components/nav.html"] .site-header.scrolled {
+  .site-navigation-host .site-header.scrolled {
   background: rgba(226, 221, 212, 0.985);
   box-shadow: 0 12px 30px rgba(40, 32, 24, 0.14);
 }
@@ -377,6 +377,7 @@
   box-shadow: 0 0 10px rgba(94,224,138,0.72);
 }
 .live-dot.is-cached { background: #f7b34d; box-shadow: 0 0 9px rgba(247,179,77,0.58); }
+.live-dot.is-partial { background: #f7b34d; box-shadow: 0 0 9px rgba(247,179,77,0.58); }
 .live-dot.is-error { background: #ff6b6b; box-shadow: 0 0 9px rgba(255,107,107,0.58); }
 
 .live-metric {
@@ -548,7 +549,7 @@
   line-height: 1.25;
 }
 
-[data-include="components/nav.html"] .site-header.scrolled {
+.site-navigation-host .site-header.scrolled {
   padding-top: 4px;
   padding-bottom: 4px;
 }
@@ -601,4 +602,58 @@
 
 .live-updated {
   font-size: 0.51rem;
+}
+
+
+/* ============================================================
+   EINHEITLICHE NAVIGATION AUF ALLEN SEITEN · 20260802-nav-unified-1
+   Beim Scrollen wird der Header nur sanft kompakter.
+   ============================================================ */
+.site-header,
+.site-header .brand-banner,
+.site-header .page-link,
+.site-header .nav-group summary,
+.site-header .theme-toggle,
+.site-header .menu-toggle,
+.site-header .bitcoin-live-strip {
+  transition-duration: 180ms;
+  transition-timing-function: ease;
+}
+
+.site-header {
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.site-navigation-host .site-header.scrolled {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.site-header.scrolled .brand-banner {
+  width: min(188px, 21.5vw);
+}
+
+.site-header.scrolled .page-link,
+.site-header.scrolled .nav-group summary {
+  min-height: 31px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.site-header.scrolled .theme-toggle,
+.site-header.scrolled .menu-toggle {
+  width: 33px;
+  height: 33px;
+}
+
+.site-header.scrolled .bitcoin-live-strip {
+  min-height: 22px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .site-header * {
+    transition: none !important;
+  }
 }

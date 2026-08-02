@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html data-theme="dark" lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,20 +7,102 @@
   <meta name="theme-color" content="#0b0d12">
   <title>Bitcoin-Rentenrechner · Einundzwanzig Koblenz</title>
   <link rel="canonical" href="https://21koblenz.github.io/einundzwanzig-meetup-website/rechner.html">
-  <link href="css/style.css?v=20260801-nav-compact-1" rel="stylesheet">
+  <link href="css/style.css?v=20260802-nav-mempool-fix-2" rel="stylesheet">
   <link href="css/rechner.css?v=20260801-menu-guide-fix-1" rel="stylesheet">
 </head>
 <body class="calculator-page">
-  <div data-include="components/nav.html"></div>
-  <main class="page-shell calculator-shell">
-    <header class="topbar calculator-contextbar">
-      <a class="calculator-brand" href="index.html" aria-label="Zurück zur Startseite">
-        <div class="brand-mark" aria-hidden="true">21</div>
-        <span><small>Einundzwanzig Koblenz · Werkzeug</small>Bitcoin-Rentenrechner</span>
-      </a>
-      <div class="top-note">Lokal im Browser · keine Datenübertragung</div>
-    </header>
+  <!-- SHARED_NAV_START source=components/nav.html hash=69f09269a03e -->
+<div class="site-navigation-host" data-nav-source="components/nav.html" data-nav-hash="69f09269a03e">
+<!-- ============================================================
+     GEMEINSAME HAUPTNAVIGATION
+     ============================================================ -->
+<header class="site-header" data-nav-version="20260802-nav-unified-1">
+  <a class="brand brand-banner" href="index.html" aria-label="21Meetup Startseite">
+    <img class="banner-logo banner-logo-dark" src="assets/banner-dark.svg" alt="Einundzwanzig im Dark Mode">
+    <img class="banner-logo banner-logo-light" src="assets/banner-light.svg" alt="Einundzwanzig im Light Mode">
+    <span class="brand-sub">KOBLENZ · 21MEETUP</span>
+  </a>
 
+  <nav class="main-nav" aria-label="Hauptnavigation">
+    <div class="nav-primary" aria-label="Hauptseiten">
+      <a class="page-link" data-page="index.html" href="index.html">Idee</a>
+      <a class="page-link" data-page="technik.html" href="technik.html">Badge-Technik</a>
+      <a class="page-link" data-page="funktionen.html" href="funktionen.html">Funktionen</a>
+      <a class="page-link" data-page="community.html" href="community.html">Community</a>
+      <a class="page-link" data-page="social.html" href="social.html">Koblenz</a>
+      <a class="page-link page-link-tool" data-page="rechner.html" href="rechner.html"><span aria-hidden="true">₿</span> FIRE Rechner</a>
+      <a class="page-link page-link-guide" data-pages="rechner-anleitung.html,lokal-starten.html" href="rechner-anleitung.html">Anleitungen</a>
+    </div>
+
+    <details class="nav-group">
+      <summary>Direkt zu</summary>
+      <div class="nav-dropdown">
+        <a href="index.html#problem">Problem</a>
+        <a href="index.html#loesung">Lösung</a>
+        <a href="technik.html#nfc">NFC</a>
+        <a href="technik.html#rolling-qr">Rolling QR</a>
+        <a href="technik.html#signaturen">Signaturen</a>
+        <a href="technik.html#web-of-trust">Web of Trust</a>
+        <a href="funktionen.html#netzwerk">Netzwerkdaten</a>
+        <a href="funktionen.html#events">Events</a>
+        <a href="rechner.html">₿ FIRE Rechner</a>
+        <a href="rechner-anleitung.html">Rechner-Anleitung</a>
+        <a href="lokal-starten.html">Webseite lokal starten</a>
+      </div>
+    </details>
+
+    <details class="nav-group">
+      <summary>Projekt</summary>
+      <div class="nav-dropdown">
+        <a href="#" id="appDataSourceSettings" hidden>Datenquelle ändern</a>
+        <a href="https://zapstore.dev/apps/space.einundzwanzig.meetup" target="_blank" rel="noopener">App laden</a>
+        <a href="rechner-anleitung.html">Rechner-Anleitung</a>
+        <a href="lokal-starten.html">Webseite lokal starten</a>
+        <a href="https://github.com/louisthecat86/Einundzwanzig-Meetup-App" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://portal.einundzwanzig.space/de/meetup/einundzwanzig-koblenz" target="_blank" rel="noopener">Koblenz-Termine</a>
+      </div>
+    </details>
+  </nav>
+
+  <div class="header-controls">
+    <button class="theme-toggle header-theme-toggle" type="button" aria-label="Dark- oder Light-Mode wechseln" title="Dark- oder Light-Mode wechseln"><span class="theme-icon">☀</span></button>
+    <button class="menu-toggle" type="button" aria-label="Navigation öffnen" aria-expanded="false">☰</button>
+  </div>
+
+
+  <div class="bitcoin-live-strip" id="bitcoinLiveStrip" aria-label="Live Bitcoin-Netzwerkdaten">
+    <span class="live-source" title="Bitcoin-Datenquelle"><span class="live-dot" id="bitcoinLiveDot" aria-hidden="true"></span><span id="liveSourceLabel">Datenquelle</span></span>
+
+    <span class="live-metric live-price">
+      <span class="live-label">BTC</span>
+      <strong id="liveBitcoinPrice">–</strong>
+    </span>
+
+    <span class="live-divider" aria-hidden="true"></span>
+
+    <span class="live-metric">
+      <span class="live-label">Block</span>
+      <strong id="liveBlockHeight">–</strong>
+    </span>
+
+    <span class="live-divider" aria-hidden="true"></span>
+
+    <span class="live-metric live-moscow">
+      <span class="live-label">Moscow Time</span>
+      <strong id="liveMoscowTime">–</strong>
+    </span>
+
+    <div class="live-fiat-switch" role="group" aria-label="Fiatwährung für Bitcoin-Preis und Moscow Time">
+      <button type="button" data-live-fiat="USD" aria-pressed="true">USD</button>
+      <button type="button" data-live-fiat="EUR" aria-pressed="false">EUR</button>
+    </div>
+
+    <span class="live-updated" id="liveUpdated" aria-live="polite">lädt …</span>
+  </div>
+</header>
+</div>
+<!-- SHARED_NAV_END -->
+  <main class="page-shell calculator-shell">
     <section class="hero calculator-hero">
       <div>
         <div class="eyebrow">Bitcoin Langzeitsimulation</div>
@@ -32,6 +114,7 @@
           <a class="btn btn-primary" href="rechner-anleitung.html">Rechner-Anleitung öffnen</a>
           <a class="btn btn-secondary" href="lokal-starten.html">Webseite lokal starten</a>
         </div>
+        <p class="calculator-local-note">Berechnung lokal im Browser · Eingaben werden nicht an den Webserver übertragen.</p>
       </div>
 
       <div class="hero-visual" aria-hidden="true">
@@ -608,11 +691,11 @@
 
   <div data-include="components/footer.html"></div>
 
-  <script src="js/config.js"></script>
+  <script src="js/config.js?v=20260802-nav-mempool-fix-2"></script>
   <script src="js/theme.js"></script>
-  <script src="js/include.js"></script>
-  <script src="js/navigation.js?v=20260801-menu-guide-fix-1"></script>
-<script src="js/mempool-ticker.js?v=20260801-scroll-dca-1"></script>
+  <script src="js/include.js?v=20260802-nav-mempool-fix-2"></script>
+  <script src="js/navigation.js?v=20260802-nav-mempool-fix-2"></script>
+<script src="js/mempool-ticker.js?v=20260802-nav-mempool-fix-2"></script>
   <script src="js/footer.js"></script>
   <script src="js/scroll-top.js"></script>
   <script src="js/hover.js"></script>

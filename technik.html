@@ -6,10 +6,100 @@
 <meta content="width=device-width, initial-scale=1" name="viewport"/>
 <meta content="So verifiziert 21Meetup Badges mit Nostr, Schnorr-Signaturen, Rolling QR, NFC und defensiver Datenprüfung." name="description"/>
 <title>21Meetup – Technische Umsetzung</title>
-<link href="https://21koblenz.github.io/einundzwanzig-meetup-website/technik.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="21Meetup" property="og:site_name"/><meta content="de_DE" property="og:locale"/><meta content="21Meetup – Technische Umsetzung" property="og:title"/><meta content="So verifiziert 21Meetup Badges mit Nostr, Schnorr-Signaturen, Rolling QR, NFC und defensiver Datenprüfung." property="og:description"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/technik.html" property="og:url"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/assets/social-preview.jpg" property="og:image"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/assets/social-preview.jpg" property="og:image:secure_url"/><meta content="image/jpeg" property="og:image:type"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="21Meetup – Meetup-Teilnahme kryptografisch belegbar machen" property="og:image:alt"/><meta content="summary_large_image" name="twitter:card"/><meta content="21Meetup – Technische Umsetzung" name="twitter:title"/><meta content="So verifiziert 21Meetup Badges mit Nostr, Schnorr-Signaturen, Rolling QR, NFC und defensiver Datenprüfung." name="twitter:description"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/assets/social-preview.jpg" name="twitter:image"/><meta content="21Meetup – Meetup-Teilnahme kryptografisch belegbar machen" name="twitter:image:alt"/><link href="css/style.css?v=20260801-nav-compact-1" rel="stylesheet"/>
+<link href="https://21koblenz.github.io/einundzwanzig-meetup-website/technik.html" rel="canonical"/><meta content="website" property="og:type"/><meta content="21Meetup" property="og:site_name"/><meta content="de_DE" property="og:locale"/><meta content="21Meetup – Technische Umsetzung" property="og:title"/><meta content="So verifiziert 21Meetup Badges mit Nostr, Schnorr-Signaturen, Rolling QR, NFC und defensiver Datenprüfung." property="og:description"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/technik.html" property="og:url"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/assets/social-preview.jpg" property="og:image"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/assets/social-preview.jpg" property="og:image:secure_url"/><meta content="image/jpeg" property="og:image:type"/><meta content="1200" property="og:image:width"/><meta content="630" property="og:image:height"/><meta content="21Meetup – Meetup-Teilnahme kryptografisch belegbar machen" property="og:image:alt"/><meta content="summary_large_image" name="twitter:card"/><meta content="21Meetup – Technische Umsetzung" name="twitter:title"/><meta content="So verifiziert 21Meetup Badges mit Nostr, Schnorr-Signaturen, Rolling QR, NFC und defensiver Datenprüfung." name="twitter:description"/><meta content="https://21koblenz.github.io/einundzwanzig-meetup-website/assets/social-preview.jpg" name="twitter:image"/><meta content="21Meetup – Meetup-Teilnahme kryptografisch belegbar machen" name="twitter:image:alt"/><link href="css/style.css?v=20260802-nav-mempool-fix-2" rel="stylesheet"/>
 </head>
 <body>
-<div data-include="components/nav.html"></div>
+<!-- SHARED_NAV_START source=components/nav.html hash=69f09269a03e -->
+<div class="site-navigation-host" data-nav-source="components/nav.html" data-nav-hash="69f09269a03e">
+<!-- ============================================================
+     GEMEINSAME HAUPTNAVIGATION
+     ============================================================ -->
+<header class="site-header" data-nav-version="20260802-nav-unified-1">
+  <a class="brand brand-banner" href="index.html" aria-label="21Meetup Startseite">
+    <img class="banner-logo banner-logo-dark" src="assets/banner-dark.svg" alt="Einundzwanzig im Dark Mode">
+    <img class="banner-logo banner-logo-light" src="assets/banner-light.svg" alt="Einundzwanzig im Light Mode">
+    <span class="brand-sub">KOBLENZ · 21MEETUP</span>
+  </a>
+
+  <nav class="main-nav" aria-label="Hauptnavigation">
+    <div class="nav-primary" aria-label="Hauptseiten">
+      <a class="page-link" data-page="index.html" href="index.html">Idee</a>
+      <a class="page-link" data-page="technik.html" href="technik.html">Badge-Technik</a>
+      <a class="page-link" data-page="funktionen.html" href="funktionen.html">Funktionen</a>
+      <a class="page-link" data-page="community.html" href="community.html">Community</a>
+      <a class="page-link" data-page="social.html" href="social.html">Koblenz</a>
+      <a class="page-link page-link-tool" data-page="rechner.html" href="rechner.html"><span aria-hidden="true">₿</span> FIRE Rechner</a>
+      <a class="page-link page-link-guide" data-pages="rechner-anleitung.html,lokal-starten.html" href="rechner-anleitung.html">Anleitungen</a>
+    </div>
+
+    <details class="nav-group">
+      <summary>Direkt zu</summary>
+      <div class="nav-dropdown">
+        <a href="index.html#problem">Problem</a>
+        <a href="index.html#loesung">Lösung</a>
+        <a href="technik.html#nfc">NFC</a>
+        <a href="technik.html#rolling-qr">Rolling QR</a>
+        <a href="technik.html#signaturen">Signaturen</a>
+        <a href="technik.html#web-of-trust">Web of Trust</a>
+        <a href="funktionen.html#netzwerk">Netzwerkdaten</a>
+        <a href="funktionen.html#events">Events</a>
+        <a href="rechner.html">₿ FIRE Rechner</a>
+        <a href="rechner-anleitung.html">Rechner-Anleitung</a>
+        <a href="lokal-starten.html">Webseite lokal starten</a>
+      </div>
+    </details>
+
+    <details class="nav-group">
+      <summary>Projekt</summary>
+      <div class="nav-dropdown">
+        <a href="#" id="appDataSourceSettings" hidden>Datenquelle ändern</a>
+        <a href="https://zapstore.dev/apps/space.einundzwanzig.meetup" target="_blank" rel="noopener">App laden</a>
+        <a href="rechner-anleitung.html">Rechner-Anleitung</a>
+        <a href="lokal-starten.html">Webseite lokal starten</a>
+        <a href="https://github.com/louisthecat86/Einundzwanzig-Meetup-App" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://portal.einundzwanzig.space/de/meetup/einundzwanzig-koblenz" target="_blank" rel="noopener">Koblenz-Termine</a>
+      </div>
+    </details>
+  </nav>
+
+  <div class="header-controls">
+    <button class="theme-toggle header-theme-toggle" type="button" aria-label="Dark- oder Light-Mode wechseln" title="Dark- oder Light-Mode wechseln"><span class="theme-icon">☀</span></button>
+    <button class="menu-toggle" type="button" aria-label="Navigation öffnen" aria-expanded="false">☰</button>
+  </div>
+
+
+  <div class="bitcoin-live-strip" id="bitcoinLiveStrip" aria-label="Live Bitcoin-Netzwerkdaten">
+    <span class="live-source" title="Bitcoin-Datenquelle"><span class="live-dot" id="bitcoinLiveDot" aria-hidden="true"></span><span id="liveSourceLabel">Datenquelle</span></span>
+
+    <span class="live-metric live-price">
+      <span class="live-label">BTC</span>
+      <strong id="liveBitcoinPrice">–</strong>
+    </span>
+
+    <span class="live-divider" aria-hidden="true"></span>
+
+    <span class="live-metric">
+      <span class="live-label">Block</span>
+      <strong id="liveBlockHeight">–</strong>
+    </span>
+
+    <span class="live-divider" aria-hidden="true"></span>
+
+    <span class="live-metric live-moscow">
+      <span class="live-label">Moscow Time</span>
+      <strong id="liveMoscowTime">–</strong>
+    </span>
+
+    <div class="live-fiat-switch" role="group" aria-label="Fiatwährung für Bitcoin-Preis und Moscow Time">
+      <button type="button" data-live-fiat="USD" aria-pressed="true">USD</button>
+      <button type="button" data-live-fiat="EUR" aria-pressed="false">EUR</button>
+    </div>
+
+    <span class="live-updated" id="liveUpdated" aria-live="polite">lädt …</span>
+  </div>
+</header>
+</div>
+<!-- SHARED_NAV_END -->
 <main class="page-shell">
 <!-- ========================================================
          HERO
@@ -342,11 +432,11 @@ Badge mit zwei Signaturen lokal speichern</pre>
 </nav>
 </main>
 <div data-include="components/footer.html"></div>
-<script src="js/config.js"></script>
+<script src="js/config.js?v=20260802-nav-mempool-fix-2"></script>
 <script src="js/theme.js"></script>
-<script src="js/include.js"></script>
-<script src="js/navigation.js?v=20260801-menu-guide-fix-1"></script>
-<script src="js/mempool-ticker.js?v=20260801-nav-layer-fix-1"></script>
+<script src="js/include.js?v=20260802-nav-mempool-fix-2"></script>
+<script src="js/navigation.js?v=20260802-nav-mempool-fix-2"></script>
+<script src="js/mempool-ticker.js?v=20260802-nav-mempool-fix-2"></script>
 <script src="js/footer.js"></script>
 <script src="js/hover.js"></script>
 <script src="js/scroll-top.js"></script>

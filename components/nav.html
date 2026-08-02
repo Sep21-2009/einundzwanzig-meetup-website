@@ -1,7 +1,7 @@
 <!-- ============================================================
      GEMEINSAME HAUPTNAVIGATION
      ============================================================ -->
-<header class="site-header">
+<header class="site-header" data-nav-version="20260802-nav-unified-1">
   <a class="brand brand-banner" href="index.html" aria-label="21Meetup Startseite">
     <img class="banner-logo banner-logo-dark" src="assets/banner-dark.svg" alt="Einundzwanzig im Dark Mode">
     <img class="banner-logo banner-logo-light" src="assets/banner-light.svg" alt="Einundzwanzig im Light Mode">
@@ -39,6 +39,7 @@
     <details class="nav-group">
       <summary>Projekt</summary>
       <div class="nav-dropdown">
+        <a href="#" id="appDataSourceSettings" hidden>Datenquelle ändern</a>
         <a href="https://zapstore.dev/apps/space.einundzwanzig.meetup" target="_blank" rel="noopener">App laden</a>
         <a href="rechner-anleitung.html">Rechner-Anleitung</a>
         <a href="lokal-starten.html">Webseite lokal starten</a>
@@ -55,7 +56,7 @@
 
 
   <div class="bitcoin-live-strip" id="bitcoinLiveStrip" aria-label="Live Bitcoin-Netzwerkdaten">
-    <span class="live-source" title="Daten von mempool.space"><span class="live-dot" id="bitcoinLiveDot" aria-hidden="true"></span>mempool.space</span>
+    <span class="live-source" title="Bitcoin-Datenquelle"><span class="live-dot" id="bitcoinLiveDot" aria-hidden="true"></span><span id="liveSourceLabel">Datenquelle</span></span>
 
     <span class="live-metric live-price">
       <span class="live-label">BTC</span>
